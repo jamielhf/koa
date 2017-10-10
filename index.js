@@ -4,26 +4,26 @@ const fs = require('fs');
 const bodyParser = require('koa-bodyparser')
 const Router = require('koa-router')
 
-
-
-let postPage = new Router()
-
 // 使用ctx.body解析中间件
 app.use(bodyParser())
 
-postPage.get('/',async (ctx)=>{
+let router = new Router()
+
+
+
+
+
+
+router.get('/list', async (ctx)=>{
+
 
 
 })
 
 
 
-// 装载所有子路由
-let router = new Router()
-router.use('/', postPage.routes(), postPage.allowedMethods())
-
-// 加载路由中间件
-app.use(router.routes()).use(router.allowedMethods())
+app.use(router.routes())
+    .use(router.allowedMethods());
 
 
 
