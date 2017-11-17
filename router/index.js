@@ -4,29 +4,26 @@ const Router = require('koa-router') //路由中间件
 
 let router = new Router()
 
+let login = new Router()
+let index = new Router()
 
 
-router.get('/', async function (ctx, next) {
-    let title = 'jamie';
-    await ctx.render('index', {
-        title,
+
+login.get('/', async ( ctx )=>{
+    await ctx.render('login',{
+        title:123
     })
-});
-
-
-router.get('/login', async function (ctx, next) {
-    let title = '登录';
-    await ctx.render('login', {
-        title,
+})
+index.get('/', async ( ctx )=>{
+    await ctx.render('index',{
+        title:123
     })
-});
+})
 
 
+router.use('/login', login.routes(), login.allowedMethods())
+router.use('/', index.routes(), index.allowedMethods())
 
-router.post('/', function (ctx, next) {
-    let postData = ctx.request.body
-    ctx.body = postData
-});
 
 module.exports = {
     router
