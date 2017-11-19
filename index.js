@@ -6,7 +6,7 @@ const static = require('koa-static');
 const path = require('path');
 const ejs = require('ejs');
 const views = require('koa-views')
-
+const bodyParser = require('koa-bodyparser')
 // 加载模板引擎
 app.use(views(path.join(__dirname, './views'), {
     extension: 'ejs'
@@ -15,6 +15,8 @@ app.use(views(path.join(__dirname, './views'), {
 // 静态资源目录对于相对入口文件index.js的路径
 const staticPath = './static';
 
+//处理post数据
+app.use(bodyParser())
 
 app.use(static(
     path.join( __dirname,  staticPath)
