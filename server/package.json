@@ -2,7 +2,7 @@
   "name": "nodetest",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "supervisor app.js"
@@ -15,11 +15,11 @@
     "koa": "^2.3.0",
     "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.2.1",
+    "koa-static": "^4.0.2",
     "koa-views": "^6.1.1",
     "mysql": "^2.15.0",
     "supervisor": "^0.12.0"
   },
   "devDependencies": {
-    "koa-static": "^4.0.2"
   }
 }

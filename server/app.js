@@ -4,6 +4,7 @@
  */
 const Koa = require('koa');
 const conf = require('./config');
+const router = require('./router/api');
 const path = require('path');
 const app = new Koa;
 
@@ -16,8 +17,8 @@ app.use(koaStatic(
     path.join(__dirname , './../static')
 ))
 
-
-
+// 加载路由中间件
+app.use(router.routes()).use(router.allowedMethods())
 
 app.listen(conf.port);
 
