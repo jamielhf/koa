@@ -11,7 +11,15 @@
     </div>
   </footer>
 </template>
+<style scoped>
 
+.footer{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+}
+</style>
 <script>
 export default {
   name: 'Footer',

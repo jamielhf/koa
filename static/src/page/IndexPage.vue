@@ -1,14 +1,12 @@
 <template>
    <div class="g-index">
-      <Header></Header>
-      <Footer></Footer>
+     12344
    </div>
 </template>
 
 <script>
 
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+
 
 export default {
   name: 'IndexPage',
@@ -17,10 +15,7 @@ export default {
       msg: 'Welcome to Your Vue.js App'
     }
   },
-  components:{
-    Header,
-    Footer
-  }
+
 
 }
 </script>
