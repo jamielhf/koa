@@ -1,0 +1,80 @@
+<template>
+   <div class="g-login">
+     <div class="m-content">
+       <div class="field ">
+         <p class="control has-icons-left has-icons-right">
+           <input class="input" type="text" placeholder="username">
+           <span class="icon is-small is-left">
+      <i class="fa fa-user"></i>
+    </span>
+
+         </p>
+       </div>
+       <div class="field">
+         <p class="control has-icons-left has-icons-right">
+           <input class="input" type="email" placeholder="Email">
+           <span class="icon is-small is-left">
+      <i class="fa fa-envelope"></i>
+    </span>
+
+         </p>
+       </div>
+       <div class="field">
+         <p class="control has-icons-left">
+           <input class="input" type="password" placeholder="Password">
+           <span class="icon is-small is-left">
+      <i class="fa fa-lock"></i>
+    </span>
+         </p>
+       </div>
+       <div class="field">
+         <p class="control">
+           <button class="button is-success">
+             注册
+           </button>
+           <router-link to="/login" class="button ">
+             返回登录
+           </router-link>
+
+         </p>
+       </div>
+     </div>
+
+
+   </div>
+</template>
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+  .g-login{
+    margin: 0 auto;
+    width: 1000px;
+  }
+  .g-login .m-content{
+      margin: 0 auto;
+    width: 350px;
+
+  }
+</style>
+
+<script>
+
+
+import api from '../api/api'
+export default {
+  data () {
+    return {
+      msg: 'Welcome to Your Vue.js App'
+    }
+  },
+  mounted(){
+      api.register(1234,123,123).then((res)=>{
+          console.log(res);
+      })
+  },
+  components:{
+
+  }
+
+}
+</script>
+

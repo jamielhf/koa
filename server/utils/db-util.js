@@ -35,10 +35,14 @@ let createTable = function( sql ) {
     return query( sql, [] )
 }
 
+let isExitOne = function(table,key,val){
+    let  _sql =  "SELECT * FROM ?? WHERE "+key+" = ? "
+    return query( _sql, [ table, val, ] );
 
+}
 let findDataById = function( table,  id ) {
     let  _sql =  "SELECT * FROM ?? WHERE id = ? "
-    return query( _sql, [ table, id, start, end ] )
+    return query( _sql, [ table, id ] )
 }
 
 
@@ -80,6 +84,7 @@ module.exports = {
     query,
     createTable,
     findDataById,
+    isExitOne,
     findDataByPage,
     deleteDataById,
     insertData,

@@ -9,21 +9,22 @@ const userInfoController = require('../controllers/userInfo')
 
 const api = new Router();
 const login = new Router();
+const register = new Router();
 const user = new Router();
 
 
 
 login.get('/',userInfoController.getUserInfoById)
-
-login.get('/ttt',function (ctx) {
-        ctx.body = {
-            a:123
-        }
+    .get('/ttt',function (ctx) {
+    ctx.body = {
+        a:123
+    }
 })
+register.post('/',userInfoController.register)
 
-console.log(login)
 
 api.use('/api/login', login.routes(), login.allowedMethods())
+api.use('/api/register', register.routes(), register.allowedMethods())
 
 module.exports = api
 

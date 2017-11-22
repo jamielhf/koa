@@ -7,11 +7,11 @@ const conf = require('./config');
 const router = require('./router/api');
 const path = require('path');
 const app = new Koa;
-
+//处理post数据
+const bodyParser = require('koa-bodyparser');
 const koaStatic = require('koa-static');
 
-
-
+app.use(bodyParser());
 // 配置静态资源加载中间件
 app.use(koaStatic(
     path.join(__dirname , './../static')

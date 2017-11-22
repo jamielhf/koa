@@ -1,14 +1,18 @@
 <template>
    <div class="g-login">
+     <div class="m-content">
+
+
      <div class="field">
        <p class="control has-icons-left has-icons-right">
-         <input class="input" type="email" placeholder="Email">
+         <input class="input" type="text" placeholder="username">
          <span class="icon is-small is-left">
-      <i class="fa fa-envelope"></i>
+      <i class="fa fa-user"></i>
     </span>
 
        </p>
      </div>
+
      <div class="field">
        <p class="control has-icons-left">
          <input class="input" type="password" placeholder="Password">
@@ -22,9 +26,12 @@
          <button class="button is-success">
            登录
          </button>
+         <router-link to="/register" class="button">
+           注册
+         </router-link>
        </p>
      </div>
-
+     </div>
    </div>
 </template>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -33,9 +40,10 @@
     margin: 0 auto;
     width: 1000px;
   }
-  .g-login .field{
+  .g-login .m-content{
     margin: 0 auto;
-    width: 300px;
+    width: 350px;
+
   }
 </style>
 
