@@ -3,7 +3,7 @@
      <div class="m-content">
        <div class="field ">
          <p class="control has-icons-left has-icons-right">
-           <input class="input" type="text" placeholder="username">
+           <input class="input" type="text" placeholder="username" v-model="username" >
            <span class="icon is-small is-left">
       <i class="fa fa-user"></i>
     </span>
@@ -12,7 +12,7 @@
        </div>
        <div class="field">
          <p class="control has-icons-left has-icons-right">
-           <input class="input" type="email" placeholder="Email">
+           <input class="input" type="email" placeholder="Email" v-model="email" >
            <span class="icon is-small is-left">
       <i class="fa fa-envelope"></i>
     </span>
@@ -21,7 +21,7 @@
        </div>
        <div class="field">
          <p class="control has-icons-left">
-           <input class="input" type="password" placeholder="Password">
+           <input class="input" v-model="pwd" type="password" placeholder="Password">
            <span class="icon is-small is-left">
       <i class="fa fa-lock"></i>
     </span>
@@ -29,7 +29,7 @@
        </div>
        <div class="field">
          <p class="control">
-           <button class="button is-success">
+           <button class="button is-success" @click="submit">
              注册
            </button>
            <router-link to="/login" class="button ">
@@ -63,13 +63,20 @@ import api from '../api/api'
 export default {
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      email: '',
+      username:'',
+      pwd:''
     }
   },
   mounted(){
-      api.register('1sdf','sdf','adf').then((res)=>{
-          console.log(res);
-      })
+
+  },
+  methods:{
+      submit(){
+        api.register(this.username,this.email,this.pwd).then((res)=>{
+           alert(res.message)
+        })
+      }
   },
   components:{
 

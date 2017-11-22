@@ -29,6 +29,13 @@ const  conn = async (setting)=>{
 
 
 export default {
+  /**
+   * 注册
+   * @param username
+   * @param email
+   * @param pwd
+   * @returns {Promise}
+   */
     async register(username,email,pwd){
        return await conn({
          url:'register',
