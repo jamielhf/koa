@@ -67,7 +67,7 @@ export default {
     }
   },
   mounted(){
-      api.register(1234,123,123).then((res)=>{
+      api.register('1sdf','sdf','adf').then((res)=>{
           console.log(res);
       })
   },

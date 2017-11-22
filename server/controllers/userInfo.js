@@ -16,7 +16,7 @@ const userInfoController =  {
         }
     },
     /**
-     *
+     * 注册
      * @param ctx
      * @returns {Promise.<void>}
      */
@@ -29,11 +29,19 @@ const userInfoController =  {
         }
        if(isExit.length>0){
            res.message='已存在用户名或邮箱';
-           ctx.body = res;
        }else{
+         delete  data.timestamp;
+           data.create_time = new Date();
+         let r =await  User.create(data);
+           if ( r && r.insertId * 1 > 0) {
+               res.success = true;
+               res.message = '成功';
 
+           } else {
+               res.message ='添加信息失败'
+           }
        }
-
+        ctx.body = res;
 
     }
 }
