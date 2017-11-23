@@ -46,7 +46,34 @@ export default {
            pwd
          }
        })
-    }
+    },
+  /**
+   * 登录
+   * @param email
+   * @param pwd
+   * @returns {Promise}
+   */
+    async login(email,pwd){
+      return await conn({
+        url:'login',
+        type:'post',
+        data:{
+          email,
+          pwd
+        }
+      })
+    },
+  /**
+   * 获取用户信息
+   * @param email
+   * @param pwd
+   * @returns {Promise}
+   */
+  async login(){
+    return await conn({
+      url:'login',
+    })
+  }
 }
 
 

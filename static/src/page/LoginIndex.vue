@@ -5,7 +5,7 @@
 
      <div class="field">
        <p class="control has-icons-left has-icons-right">
-         <input class="input" type="text" placeholder="username">
+         <input class="input" type="text" placeholder="email" v-model="email">
          <span class="icon is-small is-left">
       <i class="fa fa-user"></i>
     </span>
@@ -15,7 +15,7 @@
 
      <div class="field">
        <p class="control has-icons-left">
-         <input class="input" type="password" placeholder="Password">
+         <input class="input" type="password" v-model="pwd" placeholder="Password">
          <span class="icon is-small is-left">
       <i class="fa fa-lock"></i>
     </span>
@@ -23,7 +23,7 @@
      </div>
      <div class="field">
        <p class="control">
-         <button class="button is-success">
+         <button class="button is-success" @click="login">
            登录
          </button>
          <router-link to="/register" class="button">
@@ -50,15 +50,29 @@
 <script>
 
 
-
+  import api from '../api/api'
 export default {
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      email: '',
+      pwd: '',
     }
+  },
+  mounted(){
+      api.login().then((res)=>{
+          console.log(res)
+      })
   },
   components:{
 
+  },
+  methods:{
+    login(){
+      api.login(this.email,this.pwd).then((res)=>{
+          console.log(res)
+        alert(res.data.message)
+      })
+    }
   }
 
 }

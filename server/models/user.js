@@ -16,10 +16,24 @@ const User = {
      * @returns {Promise.<*>}
      */
     async isExitOne (obj ) {
-        let  _sql =  "SELECT * FROM ?? WHERE username = ? OR email = ? ";
+        let  _sql =  "SELECT * FROM ?? WHERE username = ? OR email = ?  limit 1";
         return await dbUtils.query( _sql, [ 'user', obj.username, obj.email ] );
 
     },
+    /**
+     * 是否存在某个值
+     * @param key
+     * @param val
+     * @returns {Promise.<*>}
+     */
+    async isExitByKey (key,val ) {
+
+        return  await dbUtils.isExitOne('user',key,val)
+
+    },
+
+
+
 
 }
 

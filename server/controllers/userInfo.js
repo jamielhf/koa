@@ -2,6 +2,9 @@
  * Created by MACHENIKE on 2017/11/21.
  */
 const User = require('../models/user')
+const {hasSession} = require('../utils/util')
+
+
 
 const userInfoController =  {
     /**
@@ -9,11 +12,13 @@ const userInfoController =  {
      * @param ctx 上下文
      */
     async getUserInfoById(ctx){
-       console.log( ctx.query)
-        ctx.body ={
-           success:true,
-            data: ctx.query
-        }
+
+           ctx.body ={
+               success:true,
+               data: ctx.session
+           }
+
+
     },
     /**
      * 注册
@@ -43,7 +48,52 @@ const userInfoController =  {
        }
         ctx.body = res;
 
+    },
+
+    /**
+     * 登录
+     * @param ctx
+     * @returns {Promise.<void>}
+     */
+    async userLogin(ctx){
+        let data =  ctx.request.body;
+        let res = {
+            success:false,
+            message:'fail'
+        }
+        if(data.email&&data.pwd){
+
+            let emailResult =await User.isExitByKey('email',data.email);
+            if(emailResult.length>0){
+
+                if(emailResult[0].pwd===data.pwd){
+                    res.message = '登录成功';
+
+                    let session = ctx.session;
+
+                    session.isLogin = true;
+                    session.userName = emailResult[0].username;
+                    session.userId = emailResult[0].id;
+
+                }else{
+                    res.message = '密码错误'
+                }
+            }else{
+                res.message = '邮箱不存在'
+            }
+            ctx.body = res
+        }else{
+            res.message = '数据不全';
+            ctx.body = res
+        }
+
+
+
+    },
+
+    async userLogout(ctx){
+
     }
 }
 
-module.exports = userInfoController
+module.exports = userInfoController;

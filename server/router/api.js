@@ -9,20 +9,23 @@ const userInfoController = require('../controllers/userInfo')
 
 const api = new Router();
 const login = new Router();
+const logout = new Router();
 const register = new Router();
 const user = new Router();
 
-
+logout.post('/',userInfoController.userLogout)
 
 login.get('/',userInfoController.getUserInfoById)
     .get('/ttt',function (ctx) {
     ctx.body = {
         a:123
     }
-})
+}).post('/',userInfoController.userLogin)
+
+
 register.post('/',userInfoController.register)
 
-
+api.use('/api/logout', logout.routes(), logout.allowedMethods())
 api.use('/api/login', login.routes(), login.allowedMethods())
 api.use('/api/register', register.routes(), register.allowedMethods())
 

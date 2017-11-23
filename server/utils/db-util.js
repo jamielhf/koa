@@ -36,7 +36,7 @@ let createTable = function( sql ) {
 }
 
 let isExitOne = function(table,key,val){
-    let  _sql =  "SELECT * FROM ?? WHERE "+key+" = ? "
+    let  _sql =  "SELECT * FROM ?? WHERE "+key+" = ?  limit 1"
     return query( _sql, [ table, val, ] );
 
 }

@@ -6,7 +6,28 @@ const Koa = require('koa');
 const conf = require('./config');
 const router = require('./router/api');
 const path = require('path');
+
+const session = require('koa-session-minimal')
+const MysqlStore = require('koa-mysql-session')
+
+
+
 const app = new Koa;
+
+
+// session存储配置
+const sessionMysqlConfig= {
+    user: conf.database.USERNAME,
+    password: conf.database.PASSWORD,
+    database: conf.database.DATABASE,
+    host: conf.database.HOST,
+}
+// 配置session中间件  会自己在数据库建个表存放session
+app.use(session({
+    key: 'USER_SID',
+    store: new MysqlStore(sessionMysqlConfig)
+}))
+
 //处理post数据
 const bodyParser = require('koa-bodyparser');
 const koaStatic = require('koa-static');
