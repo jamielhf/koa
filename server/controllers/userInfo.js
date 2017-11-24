@@ -2,7 +2,7 @@
  * Created by MACHENIKE on 2017/11/21.
  */
 const User = require('../models/user')
-const {hasSession} = require('../utils/util')
+const {isLogin} = require('../utils/util')
 
 
 
@@ -12,7 +12,7 @@ const userInfoController =  {
      * @param ctx 上下文
      */
     async getUserInfoById(ctx){
-
+        isLogin
            ctx.body ={
                success:true,
                data: ctx.session
@@ -102,6 +102,9 @@ const userInfoController =  {
             success:true,
             message:'退出成功'
         }
+    },
+    async test(ctx,next){
+        ctx.body = 1221
     }
 }
 

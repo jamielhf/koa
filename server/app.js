@@ -37,9 +37,23 @@ app.use(bodyParser());
 app.use(koaStatic(
     path.join(__dirname , './../static')
 ))
+//处理错误
+const handler = async (ctx, next) => {
+    try {
+        await next();
+    } catch (err) {
+        ctx.response.status = err.statusCode || err.status || 500;
+        ctx.response.type = 'html';
+        ctx.response.body = '<p>Something wrong, please contact administrator.</p>';
 
+    }
+};
+
+app.use(handler);
 // 加载路由中间件
 app.use(router.routes()).use(router.allowedMethods())
+
+
 
 app.listen(conf.port);
 

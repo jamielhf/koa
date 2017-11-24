@@ -4,15 +4,19 @@
  */
 
 
-const hasSession = async function (ctx) {
-    if(ctx.session.isLogin){
-        return true
+//接口登录判断
+const isLogin = async (ctx, next) => {
+    if(ctx.session&&ctx.session.isLogin&&ctx.session.userName){
+        await next();
     }else{
-        return false
+        ctx.body = {
+            success:false,
+            message:'没有登录信息'
+        }
     }
-}
+};
 
 
 module.exports = {
-    hasSession
+    isLogin
 }
