@@ -64,16 +64,15 @@ export default {
       })
     },
   /**
-   * 获取用户信息
-   * @param email
-   * @param pwd
+   *
    * @returns {Promise}
    */
-  async login(){
-    return await conn({
-      url:'login',
-    })
-  }
+  async logout(){
+     return await conn({
+       url:'logout'
+     })
+  },
+
 }
 
 

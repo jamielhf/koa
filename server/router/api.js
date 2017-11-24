@@ -13,14 +13,9 @@ const logout = new Router();
 const register = new Router();
 const user = new Router();
 
-logout.post('/',userInfoController.userLogout)
+logout.get('/',userInfoController.userLogout)
 
-login.get('/',userInfoController.getUserInfoById)
-    .get('/ttt',function (ctx) {
-    ctx.body = {
-        a:123
-    }
-}).post('/',userInfoController.userLogin)
+login.post('/',userInfoController.userLogin)
 
 
 register.post('/',userInfoController.register)

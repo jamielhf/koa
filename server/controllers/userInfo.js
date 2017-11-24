@@ -74,7 +74,8 @@ const userInfoController =  {
                     session.isLogin = true;
                     session.userName = emailResult[0].username;
                     session.userId = emailResult[0].id;
-
+                    res.success = true
+                    res.data = session
                 }else{
                     res.message = '密码错误'
                 }
@@ -90,9 +91,17 @@ const userInfoController =  {
 
 
     },
-
+    /**
+     * 退出
+     * @param ctx
+     * @returns {Promise.<void>}
+     */
     async userLogout(ctx){
-
+       ctx.session = {};
+       ctx.body = {
+            success:true,
+            message:'退出成功'
+        }
     }
 }
 

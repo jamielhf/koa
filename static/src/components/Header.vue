@@ -30,13 +30,29 @@
         <div class="navbar-item">
           <div class="field is-grouped">
 
-            <p class="control">
+            <p class="control" v-if="!isLogin">
               <router-link class="button is-primary" to="/login">
               <span class="icon">
-                <i class="fa fa-download"></i>
+                <i class="fa fa-user"></i>
               </span>
                 <span>登录</span>
               </router-link>
+            </p>
+            <p class="control" v-if="isLogin">
+              <a class="button "  >
+              <span class="icon">
+                <i class="fa fa-user"></i>
+              </span>
+                <span>{{username}}</span>
+              </a>
+            </p>
+            <p class="control" v-if="isLogin">
+              <a class="button "  @click="logout">
+              <span class="icon">
+                <i class="fa fa-user"></i>
+              </span>
+                <span>退出</span>
+              </a>
             </p>
           </div>
         </div>
@@ -46,11 +62,40 @@
 </template>
 
 <script>
+  import api from '../api/api'
+  import { mapGetters } from 'vuex'
 export default {
   name: 'Header',
   data () {
     return {
 
+    }
+  },
+  computed:{
+     isLogin(){
+         return this.$store.getters.getUserInfo.isLogin||false
+     },
+      username(){
+        return this.$store.getters.getUserInfo.username||''
+      }
+
+  },
+  methods:{
+    logout(){
+        api.logout().then((res)=>{
+            if(res.data.success){
+              this.$store.dispatch('setUserInfo',{
+                username:'',
+                isLogin:''
+              })
+              alert('已退出')
+              this.$router.push('/')
+            }else{
+                alert(res.data.message)
+            }
+
+
+        })
     }
   }
 }

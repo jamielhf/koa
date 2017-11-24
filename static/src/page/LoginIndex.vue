@@ -50,7 +50,7 @@
 <script>
 
 
-  import api from '../api/api'
+import api from '../api/api'
 export default {
   data () {
     return {
@@ -59,9 +59,7 @@ export default {
     }
   },
   mounted(){
-      api.login().then((res)=>{
-          console.log(res)
-      })
+
   },
   components:{
 
@@ -69,8 +67,18 @@ export default {
   methods:{
     login(){
       api.login(this.email,this.pwd).then((res)=>{
-          console.log(res)
-        alert(res.data.message)
+          let d = res.data;
+         if(d.success){
+
+           this.$store.dispatch('setUserInfo',{
+             username:d.data.userName,
+             isLogin:d.data.isLogin
+           })
+
+           this.$router.push('/')
+         }else{
+             alert(d.message)
+         }
       })
     }
   }
