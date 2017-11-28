@@ -73,8 +73,17 @@ export default {
   },
   methods:{
       submit(){
-        api.register(this.username,this.email,this.pwd).then((res)=>{
-           alert(res.message)
+
+        let  hash = md5(this.pwd);
+
+        api.register(this.username,this.email,hash).then((res)=>{
+            if(res.data.success){
+              alert(res.data.message);
+                this.$router.push('/login')
+            }else{
+              alert(res.data.message)
+            }
+
         })
       }
   },

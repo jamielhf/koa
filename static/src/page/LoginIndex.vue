@@ -66,7 +66,9 @@ export default {
   },
   methods:{
     login(){
-      api.login(this.email,this.pwd).then((res)=>{
+
+      let  hash = md5(this.pwd);
+      api.login(this.email,hash).then((res)=>{
           let d = res.data;
          if(d.success){
 

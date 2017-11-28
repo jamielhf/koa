@@ -38,6 +38,7 @@ const userInfoController =  {
          delete  data.timestamp;
            data.create_time = new Date();
          let r =await  User.create(data);
+
            if ( r && r.insertId * 1 > 0) {
                res.success = true;
                res.message = '成功';
@@ -105,6 +106,19 @@ const userInfoController =  {
     },
     async test(ctx,next){
         ctx.body = 1221
+    },
+    /**
+     *返回用户名
+     * @param ctx
+     * @returns {Promise.<void>}
+     */
+    async getUserInfo(ctx){
+        if(ctx.session){
+            ctx.body = {
+                userName:ctx.session.userName
+            }
+        }
+
     }
 }
 

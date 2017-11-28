@@ -19,7 +19,8 @@ const getters = {
 const actions = {
   setUserInfo({commit},data){
     commit(types.SET_USERINFO,data);
-    sessionStorage.setItem('username',data.userName)
+    console.log(data)
+    sessionStorage.setItem('username',data.username)
     sessionStorage.setItem('isLogin',data.isLogin)
   },
 
