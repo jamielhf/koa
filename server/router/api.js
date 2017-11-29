@@ -5,6 +5,7 @@
 const Router  = require('koa-router');
 
 const userInfoController = require('../controllers/userInfo')
+const indexController= require('../controllers/index')
 //接口登录判断
 const isLogin = async (ctx, next) => {
     if(ctx.session&&ctx.session.isLogin&&ctx.session.userName){
@@ -22,6 +23,8 @@ const login = new Router();
 const logout = new Router();
 const register = new Router();
 const user = new Router();
+const index = new Router()
+
 
 logout.use(isLogin)
 logout.get('/',userInfoController.userLogout)
@@ -34,7 +37,7 @@ login.post('/',userInfoController.userLogin)
 
 register.post('/',userInfoController.register)
 
-
+index.get('/article',indexController.getArticleList)
 
 
 
@@ -43,6 +46,7 @@ api.use('/api/user', user.routes(), user.allowedMethods())
 api.use('/api/logout', logout.routes(), logout.allowedMethods())
 api.use('/api/login', login.routes(), login.allowedMethods())
 api.use('/api/register', register.routes(), register.allowedMethods())
+api.use('/api/index', index.routes(), index.allowedMethods())
 
 module.exports = api
 

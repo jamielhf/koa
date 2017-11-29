@@ -64,7 +64,7 @@ export default {
       })
     },
   /**
-   *
+   *退出
    * @returns {Promise}
    */
   async logout(){
@@ -72,7 +72,11 @@ export default {
        url:'logout'
      })
   },
-
+  async articleList(){
+    return await  conn({
+      url:'index/article'
+    })
+  }
 }
 
 

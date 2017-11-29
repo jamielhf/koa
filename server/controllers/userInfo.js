@@ -2,9 +2,6 @@
  * Created by MACHENIKE on 2017/11/21.
  */
 const User = require('../models/user')
-const {isLogin} = require('../utils/util')
-
-
 
 const userInfoController =  {
     /**
@@ -12,7 +9,7 @@ const userInfoController =  {
      * @param ctx 上下文
      */
     async getUserInfoById(ctx){
-        isLogin
+
            ctx.body ={
                success:true,
                data: ctx.session
@@ -108,7 +105,7 @@ const userInfoController =  {
         ctx.body = 1221
     },
     /**
-     *返回用户名
+     *
      * @param ctx
      * @returns {Promise.<void>}
      */

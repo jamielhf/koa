@@ -11,7 +11,7 @@
 <script>
   import HeaderCom from './components/Header';
   import FooterCom from './components/Footer';
-import './css/base.scss';
+//import './css/base.scss';
 
 export default {
   name: 'app',
