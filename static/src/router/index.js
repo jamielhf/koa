@@ -4,6 +4,7 @@ import IndexPage from '@/page/IndexPage'
 
 
 const LoginIndex = (resolve)=>{require(['../page/LoginIndex.vue'],resolve)}
+const SocketPage = (resolve)=>{require(['../page/SocketPage.vue'],resolve)}
 const Register = (resolve)=>{require(['../page/RegisterIndex.vue'],resolve)}
 Vue.use(Router)
 
@@ -14,6 +15,11 @@ export default new Router({
       name: 'Index',
       component: IndexPage
     },
+    {
+      path: '/socket',
+      component: SocketPage
+    },
+
     {
       path: '/login',
       component: LoginIndex

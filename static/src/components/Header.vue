@@ -19,9 +19,9 @@
             demo
           </a>
           <div class="navbar-dropdown is-boxed">
-            <a class="navbar-item" href="/">
-              其他的demo
-            </a>
+            <router-link class="navbar-item" to="socket">
+              socket.io的demo
+            </router-link>
           </div>
         </div>
       </div>

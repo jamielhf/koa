@@ -10,6 +10,23 @@ const log4js = require('log4js');
 const {info} = require('./utils/log-util');
 log4js.configure(conf.log);
 
+const app = new Koa;
+
+const server = require('http').createServer(app.callback());
+const io = require('socket.io')(server);
+
+io.on('connection', function(socket){
+
+    socket.on('sendMsg',  (data) =>{
+        console.log(data)
+        if(data){
+            io.sockets.emit('allMsg',data)
+        }
+
+    });
+});
+
+
 const logger = log4js.getLogger('cheese');
 
 
@@ -33,7 +50,7 @@ const sessionMysqlConfig= {
 }
 
 
-const app = new Koa;
+
 
 
 // 配置session中间件  会自己在数据库建个表存放session
@@ -65,9 +82,6 @@ app.on('error', function (err, ctx) {
 })
 
 
-
-
-
-app.listen(conf.port);
+server.listen(conf.port);
 
 console.log(`the server is start at port ${conf.port}`)
