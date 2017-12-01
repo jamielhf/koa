@@ -13,6 +13,15 @@ const indexControllers = {
             path:'/api/yyt.base.user.sys.login',
             method:'GET'
         }
+
+        if(!ctx.session.isLogin){
+            ctx.body = {
+               msg:'请登录'
+            }
+            return
+        }
+
+
         async function getData() {
           return  new Promise((resolve,reject)=>{
                 let req = http.request(options, function(res){

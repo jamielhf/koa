@@ -8,6 +8,17 @@ const SocketPage = (resolve)=>{require(['../page/SocketPage.vue'],resolve)}
 const Register = (resolve)=>{require(['../page/RegisterIndex.vue'],resolve)}
 Vue.use(Router)
 
+
+const checkLogin  = (to,from,next)=>{
+  let isLogin =localStorage.getItem('isLogin');
+   if(isLogin){
+     next()
+   }else{
+     next('./login')
+   }
+
+}
+
 export default new Router({
   routes: [
     {
@@ -17,7 +28,8 @@ export default new Router({
     },
     {
       path: '/socket',
-      component: SocketPage
+      component: SocketPage,
+      beforeEnter:checkLogin
     },
 
     {

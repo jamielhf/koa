@@ -8,6 +8,7 @@ const router = require('./router/api');
 const path = require('path');
 const log4js = require('log4js');
 const {info} = require('./utils/log-util');
+const {isLogin}  = require('./utils/util')
 log4js.configure(conf.log);
 
 const app = new Koa;
@@ -15,16 +16,7 @@ const app = new Koa;
 const server = require('http').createServer(app.callback());
 const io = require('socket.io')(server);
 
-io.on('connection', function(socket){
 
-    socket.on('sendMsg',  (data) =>{
-        console.log(data)
-        if(data){
-            io.sockets.emit('allMsg',data)
-        }
-
-    });
-});
 
 
 const logger = log4js.getLogger('cheese');
@@ -82,6 +74,27 @@ app.on('error', function (err, ctx) {
 })
 
 
+
+
+//socket 应用
+io.on('connection', function(socket){
+    let defaultRoomId = '001';
+
+    console.log(socket.id)
+
+
+    socket.on('sendMsg',  (data) =>{
+        if(data.type=='room'){
+            //是否有房间号
+            if(data.id){
+                socket.join(data.id);
+
+                io.sockets.in(data.id).emit('sendRoomMsg',data);
+            }
+        }
+
+    });
+});
 server.listen(conf.port);
 
 console.log(`the server is start at port ${conf.port}`)

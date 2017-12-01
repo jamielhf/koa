@@ -6,8 +6,8 @@ import * as types from '../mutation'
 
 const state = {
   userInfo:{
-    username:sessionStorage.getItem('username'),
-    isLogin:sessionStorage.getItem('isLogin')
+    username:localStorage.getItem('username'),
+    isLogin:localStorage.getItem('isLogin')
   },
 }
 
@@ -19,9 +19,9 @@ const getters = {
 const actions = {
   setUserInfo({commit},data){
     commit(types.SET_USERINFO,data);
-    console.log(data)
-    sessionStorage.setItem('username',data.username)
-    sessionStorage.setItem('isLogin',data.isLogin)
+
+    localStorage.setItem('username',data.username)
+    localStorage.setItem('isLogin',data.isLogin)
   },
 
 }

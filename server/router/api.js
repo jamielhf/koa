@@ -6,17 +6,7 @@ const Router  = require('koa-router');
 
 const userInfoController = require('../controllers/userInfo')
 const indexController= require('../controllers/index')
-//接口登录判断
-const isLogin = async (ctx, next) => {
-    if(ctx.session&&ctx.session.isLogin&&ctx.session.userName){
-        await next();
-    }else{
-        ctx.body = {
-            success:false,
-            message:'没有登录信息'
-        }
-    }
-};
+const {isLogin}  = require('../utils/util')
 
 const api = new Router();
 const login = new Router();
