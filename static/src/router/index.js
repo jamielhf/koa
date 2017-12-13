@@ -5,6 +5,7 @@ import IndexPage from '@/page/IndexPage'
 
 const LoginIndex = (resolve)=>{require(['../page/LoginIndex.vue'],resolve)}
 const SocketPage = (resolve)=>{require(['../page/SocketPage.vue'],resolve)}
+const CheerioPage = (resolve)=>{require(['../page/CheerioPage.vue'],resolve)}
 const Register = (resolve)=>{require(['../page/RegisterIndex.vue'],resolve)}
 Vue.use(Router)
 
@@ -31,7 +32,11 @@ export default new Router({
       component: SocketPage,
       beforeEnter:checkLogin
     },
-
+    {
+      path: '/cheerio',
+      component: CheerioPage,
+      beforeEnter:checkLogin
+    },
     {
       path: '/login',
       component: LoginIndex

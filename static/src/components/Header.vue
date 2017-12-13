@@ -22,6 +22,9 @@
             <router-link class="navbar-item" to="socket">
               socket.io的demo
             </router-link>
+            <router-link class="navbar-item" to="socket">
+              爬虫的demo
+            </router-link>
           </div>
         </div>
       </div>

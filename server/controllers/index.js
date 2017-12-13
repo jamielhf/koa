@@ -4,9 +4,12 @@
  */
 
 const http = require('http');
+const request = require('superagent');
+
+
 
 const indexControllers = {
-    async getArticleList(ctx){
+    async getApiTest(ctx){
         const options={
             hostname:'webtest.yunyichina.cn',
             port:3000,
@@ -14,15 +17,7 @@ const indexControllers = {
             method:'GET'
         }
 
-        if(!ctx.session.isLogin){
-            ctx.body = {
-               msg:'请登录'
-            }
-            return
-        }
-
-
-        async function getData() {
+          async function getData() {
           return  new Promise((resolve,reject)=>{
                 let req = http.request(options, function(res){
                     let result = '';
@@ -43,6 +38,29 @@ const indexControllers = {
        ctx.body = await getData()
 
 
+
+    },
+    async test(ctx){
+
+        const getUrl  = async ()=>{
+            return new Promise((resovle,reject)=>{
+                request.get('https://juejin.im/')
+                    .query({}) // query string
+                    .end((err, res) => {
+                        if(!err){
+                            resovle(res)
+                        }else{
+                            reject()
+                        }
+
+                    });
+
+            })
+
+        }
+        console.log((await getUrl()).text)
+
+                ctx.body =  (await getUrl()).text
 
     }
 }

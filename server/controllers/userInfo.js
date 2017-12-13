@@ -68,7 +68,28 @@ const userInfoController =  {
                     res.message = '登录成功';
 
                     let session = ctx.session;
-
+                    ctx.cookies.set(
+                        'username',
+                        emailResult[0].username,
+                        {
+                            domain: 'localhost',  // 写cookie所在的域名
+                            path: '/',       // 写cookie所在的路径
+                            maxAge: 10 * 60 * 1000, // cookie有效时长
+                            httpOnly: false,  // 是否只用于http请求中获取
+                            overwrite: false  // 是否允许重写
+                        }
+                    )
+                    ctx.cookies.set(
+                        'isLogin',
+                        true,
+                        {
+                            domain: 'localhost',  // 写cookie所在的域名
+                            path: '/',       // 写cookie所在的路径
+                            maxAge: 10 * 60 * 1000, // cookie有效时长
+                            httpOnly: false,  // 是否只用于http请求中获取
+                            overwrite: false  // 是否允许重写
+                        }
+                    )
                     session.isLogin = true;
                     session.userName = emailResult[0].username;
                     session.userId = emailResult[0].id;
@@ -96,6 +117,30 @@ const userInfoController =  {
      */
     async userLogout(ctx){
        ctx.session = {};
+
+        ctx.cookies.set(
+            'username',
+            '',
+            {
+                domain: 'localhost',  // 写cookie所在的域名
+                path: '/',       // 写cookie所在的路径
+                maxAge: 10 * 60 * 1000, // cookie有效时长
+                httpOnly: false,  // 是否只用于http请求中获取
+                overwrite: false  // 是否允许重写
+            }
+        )
+        ctx.cookies.set(
+            'isLogin',
+            false,
+            {
+                domain: 'localhost',  // 写cookie所在的域名
+                path: '/',       // 写cookie所在的路径
+                maxAge: 10 * 60 * 1000, // cookie有效时长
+                httpOnly: false,  // 是否只用于http请求中获取
+                overwrite: false  // 是否允许重写
+            }
+        )
+
        ctx.body = {
             success:true,
             message:'退出成功'

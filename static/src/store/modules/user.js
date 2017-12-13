@@ -2,12 +2,12 @@
  * Created by linhaifeng on 2016/12/23.
  */
 import * as types from '../mutation'
-
+import util from '../../modules/util'
 
 const state = {
   userInfo:{
-    username:localStorage.getItem('username'),
-    isLogin:localStorage.getItem('isLogin')
+    username:util.getCookie('username'),
+    isLogin:util.getCookie('isLogin')
   },
 }
 
@@ -19,9 +19,8 @@ const getters = {
 const actions = {
   setUserInfo({commit},data){
     commit(types.SET_USERINFO,data);
-
-    localStorage.setItem('username',data.username)
-    localStorage.setItem('isLogin',data.isLogin)
+    util.setCookie('username',data.username);
+    util.setCookie('isLogin',data.isLogin);
   },
 
 }
