@@ -5,7 +5,7 @@
 
 const http = require('http');
 const request = require('superagent');
-
+const cheerio = require('cheerio');
 
 
 const indexControllers = {
@@ -40,17 +40,17 @@ const indexControllers = {
 
 
     },
-    async test(ctx){
+    async article(ctx){
 
         const getUrl  = async ()=>{
             return new Promise((resovle,reject)=>{
-                request.get('https://juejin.im/')
+                request.get('https://juejin.im/welcome/frontend')
                     .query({}) // query string
                     .end((err, res) => {
                         if(!err){
                             resovle(res)
                         }else{
-                            reject()
+                            reject(err)
                         }
 
                     });
@@ -58,9 +58,25 @@ const indexControllers = {
             })
 
         }
-        console.log((await getUrl()).text)
 
-                ctx.body =  (await getUrl()).text
+
+        let res = {
+            success:true,
+            data:{}
+        }
+        let $ = cheerio.load((await getUrl()).text);
+        res.data.article = [];
+        $("ul.entry-list .title").map((k,i)=>{
+           let dom = $(i);
+
+            res.data.article.push({
+                title:dom.text()||"",
+                artUrl:('https://juejin.im'+dom.attr('href'))||""
+            })
+        })
+
+
+        ctx.body =  res
 
     }
 }

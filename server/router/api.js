@@ -28,7 +28,7 @@ login.post('/',userInfoController.userLogin)
 register.post('/',userInfoController.register)
 
 
-index.get('/test',indexController.test)
+index.get('/article',indexController.article)
 
 
 

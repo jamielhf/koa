@@ -5,21 +5,19 @@
 </template>
 
 <script>
+
 import api from '../api/api'
 
    export default {
-    components: {
 
-    },
     data () {
      return {
-
+        dataList:[]
      }
     },
      mounted(){
-        api.articleList().then((res)=>{
-            console.log(res)
-        })
+
+
      },
      methods:{
 

@@ -20,10 +20,13 @@
           </a>
           <div class="navbar-dropdown is-boxed">
             <router-link class="navbar-item" to="socket">
-              socket.io的demo
+              socket.io
             </router-link>
-            <router-link class="navbar-item" to="socket">
-              爬虫的demo
+            <router-link class="navbar-item" to="superagent">
+              爬虫
+            </router-link>
+            <router-link class="navbar-item" to="testApi">
+              测试接口工具
             </router-link>
           </div>
         </div>

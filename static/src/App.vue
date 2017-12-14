@@ -7,7 +7,16 @@
     <FooterCom></FooterCom>
   </div>
 </template>
-
+<style>
+  #app{
+    position: relative;
+    min-height: 1000px;
+  }
+  #app>div{
+    position: relative;
+    min-height: 800px;
+  }
+</style>
 <script>
   import HeaderCom from './components/Header';
   import FooterCom from './components/Footer';
