@@ -29,6 +29,7 @@ register.post('/',userInfoController.register)
 
 
 index.get('/article',indexController.article)
+index.post('/testApi',indexController.testApi)
 
 
 

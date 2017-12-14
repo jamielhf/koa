@@ -4,16 +4,15 @@
        <div class="field">
          <label class="label">url地址</label>
          <div class="control">
-           <input class="input" type="text" placeholder="url">
+           <input class="input" v-model="url" type="text" placeholder="url">
          </div>
        </div>
-
 
        <div class="field">
          <label class="label">请求类型</label>
          <div class="control">
            <div class="select">
-             <select>
+             <select v-model="type">
                <option value="get">get</option>
                <option value="post">post</option>
              </select>
@@ -24,16 +23,24 @@
        <div class="field">
          <label class="label">数据</label>
          <div class="control">
-           <textarea class="textarea" placeholder="数据"></textarea>
+           <textarea class="textarea" v-model="data" placeholder="数据"></textarea>
          </div>
        </div>
 
        <div class="field is-grouped">
          <div class="control">
-           <button class="button is-link">Submit</button>
+           <button class="button is-link" @click="submit">提交</button>
          </div>
 
        </div>
+
+       <div class="field">
+         <label class="label">返回的数据</label>
+         <div>
+
+         </div>
+       </div>
+
      </div>
 
    </div>
@@ -52,7 +59,10 @@ import api from '../api/api'
 
     data () {
      return {
-        dataList:[]
+       dataList:[],
+       url:'',
+       data:'',
+       type:'get',
      }
     },
      mounted(){
@@ -60,7 +70,11 @@ import api from '../api/api'
 
      },
      methods:{
-
+          submit(){
+              api.testApi(this.url,this.type,this.data).then((res)=>{
+                  console.log(res)
+              })
+          }
      }
   }
 </script>

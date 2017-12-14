@@ -14,12 +14,12 @@ const  conn = async (setting)=>{
     timestamp:(new Date).getTime()
   }, setting.data)
 
-  if(setting.type==='post'){
+  if(setting.type==='post'||setting.type==='POST'){
 
     return axios.post(baseUrl+setting.url,setting.data,setting.others)
 
 
-  }else if(setting.type==='get'){
+  }else if(setting.type==='get'||setting.type==='GET'){
 
     return axios.get(baseUrl+setting.url, {params:setting.data})
 
@@ -75,6 +75,24 @@ export default {
   async articleList(){
     return await  conn({
       url:'index/article'
+    })
+  },
+  /**
+   *
+   * @param url
+   * @param type
+   * @param data
+   * @returns {Promise}
+   */
+  async testApi(url,type,data){
+    return await conn({
+      type:'post',
+      url:'index/testApi',
+      data:{
+        url,
+        type,
+        data
+      }
     })
   }
 }
