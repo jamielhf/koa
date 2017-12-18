@@ -8,6 +8,10 @@ const userInfoController = require('../controllers/userInfo')
 const indexController= require('../controllers/index')
 const {isLogin}  = require('../utils/util')
 
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
+
+
 const api = new Router();
 const login = new Router();
 const logout = new Router();
@@ -30,6 +34,7 @@ register.post('/',userInfoController.register)
 
 index.get('/article',indexController.article)
 index.post('/testApi',indexController.testApi)
+index.post('/uploadImg', indexController.uploadImg)
 
 
 

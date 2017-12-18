@@ -78,39 +78,39 @@ postData('http://localhost:3009/api/login',post_data,function (res) {
 })
 
 
-var data = {
-    email: 123,
-    pwd: new Date().getTime()};//这是需要提交的数据
-
-
-var content = JSON.stringify(data);
-
-var options = {
-    hostname:'localhost',
-    port:'3009',
-    path:'/api/login',
-    method:'POST',
-    header:{
-        'Content-Type': 'application/json',
-        'Content-Length':content.length
-    }
-};
-
-var req = http.request(options, function (res) {
-    console.log('STATUS: ' + res.statusCode);
-    console.log('HEADERS: ' + JSON.stringify(res.headers));
-    res.setEncoding('utf8');
-    res.on('data', function (chunk) {
-        console.log('BODY: ' + chunk);
-    });
-    req.on('error', function(e) {
-        console.log('-----error-------',e);
-    });
-});
-
-req.on('error', function (e) {
-    console.log('problem with request: ' + e.message);
-});
-req.write(content)
-req.end()
+// var data = {
+//     email: 123,
+//     pwd: new Date().getTime()};//这是需要提交的数据
+//
+//
+// var content = JSON.stringify(data);
+//
+// var options = {
+//     hostname:'localhost',
+//     port:'3009',
+//     path:'/api/login',
+//     method:'POST',
+//     header:{
+//         'Content-Type': 'application/json',
+//         'Content-Length':content.length
+//     }
+// };
+//
+// var req = http.request(options, function (res) {
+//     console.log('STATUS: ' + res.statusCode);
+//     console.log('HEADERS: ' + JSON.stringify(res.headers));
+//     res.setEncoding('utf8');
+//     res.on('data', function (chunk) {
+//         console.log('BODY: ' + chunk);
+//     });
+//     req.on('error', function(e) {
+//         console.log('-----error-------',e);
+//     });
+// });
+//
+// req.on('error', function (e) {
+//     console.log('problem with request: ' + e.message);
+// });
+// req.write(content)
+// req.end()
 

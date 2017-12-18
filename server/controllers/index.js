@@ -7,7 +7,13 @@ const http = require('http');
 const queryString = require('querystring');
 const request = require('superagent');
 const cheerio = require('cheerio');
-const { URL } = require('url');
+const URL = require('url');
+const fs = require('fs');
+const path = require('path');
+const {postData,uploadFile} = require('../utils/util')
+
+
+
 
 const indexControllers = {
     async getApiTest(ctx){
@@ -83,85 +89,25 @@ const indexControllers = {
 
         let q = ctx.request.body;
 
-        // const postData = queryString.stringify(q.data);
-        //
-        //
-        // let url = new URL(q.url)
-        //
-        //
-        // let option = {
-        //     hostname:url.hostname,
-        //     port:url.port,
-        //     path:url.pathname,
-        //     method:'POST',
-        //     header:{
-        //
-        //     }
-        // }
-
-
-        const postData = queryString.stringify({
-            doctor_id:'82891d606c3511e791d000163e00065f',
-            org_id:'01e57290710c11e7938e00163e0c0311',
-            id:'0e38ac40dfd611e79de200163e00065f'
-        });
-
-        const options = {
-            hostname: 'webtest.yunyichina.cn',
-            port: 3000,
-            path: '/api/yyt.bone.visit.template.list',
-            method: 'get',
-
-        };
-
-        const req = http.request(options, (res) => {
-            console.log(`状态码: ${res.statusCode}`);
-            console.log(`响应头: ${JSON.stringify(res.headers)}`);
-            res.setEncoding('utf8');
-            res.on('data', (chunk) => {
-                console.log(`响应主体: ${chunk}`);
-            });
-            res.on('end', () => {
-                console.log('响应中已无数据。');
-            });
-        });
-
-        req.on('error', (e) => {
-            console.error(`请求遇到问题: ${e.message}`);
-        });
-
-// 写入数据到请求主体
-        req.write(postData);
-        req.end();
-
-        // let getData = async ()=>{
-        //     return  new Promise((resolve,reject)=>{
-        //         const req = http.request(option, (res) =>{
-        //             let result = '';
-        //             res.setEncoding('utf-8');
-        //             res.on('data',(chunk)=>{
-        //                 result = chunk;
-        //                 console.log(`响应主体${chunk}`);
-        //             })
-        //
-        //             res.on('end',()=>{
-        //                 resolve(result)
-        //             })
-        //
-        //         })
-        //          let data = {user:"hello",password:"world"};
-        //         req.write(require('querystring').stringify(data));
-        //
-        //         req.end();
-        //
-        //     })
-        // }
-
-
+        let res = await  postData(q.url,q.method,q.data);
 
         ctx.body = {
-            a:1
+            data:res
         }
+    },
+    async uploadImg(ctx){
+        // 上传文件请求处理
+        let result = { success: false }
+        let serverFilePath = path.join( __dirname, '../static/image' )
+
+        // 上传文件事件
+
+        result = await uploadFile( ctx, {
+            fileType: 'album',
+            path: serverFilePath
+        })
+        ctx.body = result
+
     }
 }
 

@@ -25,6 +25,10 @@
             <router-link class="navbar-item" to="superagent">
               爬虫
             </router-link>
+            <router-link class="navbar-item" to="uploadImg">
+              上传图片
+            </router-link>
+
             <router-link class="navbar-item" to="testApi">
               测试接口工具
             </router-link>

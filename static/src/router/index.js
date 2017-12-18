@@ -9,6 +9,7 @@ const SocketPage = (resolve)=>{require(['../page/SocketPage.vue'],resolve)}
 const SuperagentPage = (resolve)=>{require(['../page/SuperagentPage.vue'],resolve)}
 const Register = (resolve)=>{require(['../page/RegisterIndex.vue'],resolve)}
 const TestApiPage = (resolve)=>{require(['../page/TestApiPage.vue'],resolve)}
+const UploadImg = (resolve)=>{require(['../page/UploadImg.vue'],resolve)}
 Vue.use(Router)
 
 
@@ -37,6 +38,12 @@ export default new Router({
       component: TestApiPage,
       beforeEnter:checkLogin
     },
+    {
+      path: '/uploadImg',
+      component: UploadImg,
+      beforeEnter:checkLogin
+    },
+
     {
       path: '/socket',
       component: SocketPage,

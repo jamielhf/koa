@@ -1,5 +1,8 @@
 <template>
    <div class="g-textApi">
+     <p class="title is-5 has-text-centered">
+       简单的网络请求
+     </p>
      <div class="c-content">
        <div class="field">
          <label class="label">url地址</label>
@@ -36,7 +39,7 @@
 
        <div class="field">
          <label class="label">返回的数据</label>
-         <div>
+         <div v-html="resBody">
 
          </div>
        </div>
@@ -63,6 +66,7 @@ import api from '../api/api'
        url:'',
        data:'',
        type:'get',
+       resBody:''
      }
     },
      mounted(){
@@ -73,6 +77,7 @@ import api from '../api/api'
           submit(){
               api.testApi(this.url,this.type,this.data).then((res)=>{
                   console.log(res)
+                this.resBody = JSON.stringify(res.data, null, 4).replace(/\n/g, '<br>').replace(/\s/g, '&nbsp');
               })
           }
      }

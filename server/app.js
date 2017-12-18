@@ -4,11 +4,15 @@
  */
 const Koa = require('koa');
 const conf = require('./config');
-const router = require('./router/api');
+const router = require('./router/index');
 const path = require('path');
 const log4js = require('log4js');
 const {info} = require('./utils/log-util');
 const {isLogin}  = require('./utils/util')
+
+
+
+
 log4js.configure(conf.log);
 
 const app = new Koa;

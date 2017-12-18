@@ -14,9 +14,19 @@ const  conn = async (setting)=>{
     timestamp:(new Date).getTime()
   }, setting.data)
 
-  if(setting.type==='post'||setting.type==='POST'){
 
-    return axios.post(baseUrl+setting.url,setting.data,setting.others)
+
+
+
+  if(setting.type==='post'||setting.type==='POST'){
+    console.log(setting.others)
+
+
+    return axios.post("/api/index/uploadImg", {}, {
+      "content-type": "multipart/form-data"
+    });
+
+    // return axios.post(baseUrl+setting.url,setting.data,setting.others)
 
 
   }else if(setting.type==='get'||setting.type==='GET'){
@@ -90,11 +100,21 @@ export default {
       url:'index/testApi',
       data:{
         url,
-        type,
+        method:type,
         data
       }
     })
-  }
+  },
+
+
+  async upload(data){
+    return await conn({
+      url: 'index/uploadImg',
+      type: 'post',
+      others: {'content-type': 'multipart/form-data'},
+      data,
+    })
+  },
 }
 
 
