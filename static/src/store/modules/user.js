@@ -7,7 +7,7 @@ import util from '../../modules/util'
 const state = {
   userInfo:{
     username:util.getCookie('username'),
-    isLogin:util.getCookie('isLogin')
+    isLogin:util.getCookie('USER_SID')=='null'?false:util.getCookie('isLogin')?true:false
   },
 }
 

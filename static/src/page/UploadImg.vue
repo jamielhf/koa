@@ -19,6 +19,9 @@
            </a>
          </p>
        </div>
+       <div class="field">
+         <img v-if="imgSrc" :src="imgSrc" alt="">
+       </div>
      </div>
 
    </div>
@@ -38,7 +41,8 @@ import axios from 'axios'
 
     data () {
      return {
-        formData:''
+        formData:'',
+       imgSrc:''
      }
     },
      mounted(){
@@ -49,8 +53,11 @@ import axios from 'axios'
           submit(){
             axios.post("/api/index/uploadImg", this.formData, {
               "content-type": "multipart/form-data"
-            }).then(function(res) {
-                console.log(res)
+            }).then((res)=> {
+              res = res.data;
+               if(res.success){
+                 this.imgSrc =res.data.pictureUrl
+               }
             });
           },
           change(e){

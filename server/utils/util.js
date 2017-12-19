@@ -7,13 +7,22 @@ const { URL } = require('url');
 const request = require('request');
 const http = require('http')
 const qs = require('querystring');
-
+const conf = require('../config');
 
 const inspect = require('util').inspect
 const path = require('path')
 const os = require('os')
 const fs = require('fs')
-const Busboy = require('busboy')
+const Busboy = require('busboy')  //解析post数据
+
+const imagemin = require('imagemin'); //压缩图片
+const imageminJpegtran = require('imagemin-jpegtran');
+const imageminPngquant = require('imagemin-pngquant');
+
+
+
+
+
 
 //接口登录判断
 const isLogin = async (ctx, next) => {
@@ -66,22 +75,23 @@ function mkdirsSync( dirname ) {
 }
 
 /**
- * 获取上传文件的后缀名
- * @param  {string} fileName 获取上传文件的后缀名
- * @return {string}          文件后缀名
+ *
+ * @param filePath 文件路径
+ * @returns {Promise}
  */
-function getSuffixName( fileName ) {
-    let nameList = fileName.split('.')
-    return nameList[nameList.length - 1]
+async function imageMinUtil(filePath) {
+
+     return  imagemin([filePath], './static/out', {
+           plugins: [
+               imageminJpegtran(),
+               imageminPngquant({quality: '65-80'})
+           ]
+       })
+
 }
 
-/**
- * 上传文件
- * @param  {object} ctx     koa上下文
- * @param  {object} options 文件上传参数 fileType文件类型， path文件存放路径
- * @return {promise}
- */
-function uploadFile( ctx, options) {
+
+async function uploadFile2(ctx, options) {
     let req = ctx.req
     let res = ctx.res
     let busboy = new Busboy({headers: req.headers})
@@ -89,8 +99,9 @@ function uploadFile( ctx, options) {
     // 获取类型
     let fileType = options.fileType || 'common'
     let filePath = path.join( options.path,  fileType)
+    console.log(filePath)
     let mkdirResult = mkdirsSync( filePath )
-
+    let saveTo = ''
     return new Promise((resolve, reject) => {
         console.log('文件上传中...')
         let result = {
@@ -101,9 +112,13 @@ function uploadFile( ctx, options) {
 
         // 解析请求文件事件
         busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-            let fileName = Math.random().toString(16).substr(2) + '.' + getSuffixName(filename)
+
+            let fileName = Math.random().toString(16).substr(2) + '.' + mimetype.split('/')[1]
             let _uploadFilePath = path.join( filePath, fileName )
-            let saveTo = path.join(_uploadFilePath)
+            saveTo = path.join(_uploadFilePath)
+
+            console.log(_uploadFilePath)
+
 
             // 文件保存到制定路径
             file.pipe(fs.createWriteStream(saveTo))
@@ -113,15 +128,22 @@ function uploadFile( ctx, options) {
                 result.success = true
                 result.message = '文件上传成功'
                 result.data = {
-                    pictureUrl: `//${ctx.host}/image/${fileType}/${fileName}`
+                    pictureUrl: `//localhost:${conf.port}/image/${fileType}/${fileName}`,
+                    saveTo
                 }
                 console.log('文件上传成功！')
-                resolve(result)
+
             })
         })
 
         // 解析结束事件
         busboy.on('finish', function( ) {
+
+            if(fs.existsSync( saveTo )){
+                console.log(11111)
+
+
+            }
             console.log('文件上结束')
             resolve(result)
         })
@@ -134,6 +156,22 @@ function uploadFile( ctx, options) {
 
         req.pipe(busboy)
     })
+}
+/**
+ * 上传文件
+ * @param  {object} ctx     koa上下文
+ * @param  {object} options 文件上传参数 fileType文件类型， path文件存放路径
+ * @return {promise}
+ */
+async function uploadFile( ctx, options) {
+
+    let result =  await uploadFile2(ctx, options);
+    let file = result.data.saveTo.replace(/\\/g,'\\\\')
+    console.log(file)
+        let f = await imageMinUtil('D:\\work\\nodetest\\koa\\server\\static\\image\\album\\c899c774c2405.png');
+
+         return  f.path;
+
 
 }
 

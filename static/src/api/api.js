@@ -19,15 +19,8 @@ const  conn = async (setting)=>{
 
 
   if(setting.type==='post'||setting.type==='POST'){
-    console.log(setting.others)
 
-
-    return axios.post("/api/index/uploadImg", {}, {
-      "content-type": "multipart/form-data"
-    });
-
-    // return axios.post(baseUrl+setting.url,setting.data,setting.others)
-
+    return axios.post(baseUrl+setting.url,setting.data,setting.others)
 
   }else if(setting.type==='get'||setting.type==='GET'){
 

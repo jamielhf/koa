@@ -10,7 +10,7 @@ const cheerio = require('cheerio');
 const URL = require('url');
 const fs = require('fs');
 const path = require('path');
-const {postData,uploadFile} = require('../utils/util')
+const {postData,uploadFile,imageMin} = require('../utils/util')
 
 
 
