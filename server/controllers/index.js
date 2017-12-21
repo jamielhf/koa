@@ -111,16 +111,6 @@ const indexControllers = {
         })
         console.log(result)
 
-        async  function a() {
-            return new Promise((resolve,reject)=>{
-                setTimeout(()=>{
-                    resolve(1)
-                },1000)
-            })
-        }
-
-        let b =  await a()
-        console.log(b)
         ctx.body =result
         // let f = path.join(__dirname,'../static/image/album/d36697436be4f.png')
         // let a = await imageMinUtil(f)

@@ -124,7 +124,7 @@ async function uploadFile( ctx, options) {
             message: '',
             data: null
         }
-
+        result.data = []
         // 解析请求文件事件
         busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
 
@@ -141,11 +141,10 @@ async function uploadFile( ctx, options) {
             // 文件写入事件结束
             file.on('end', function() {
 
-                result.success = true
-                result.message = '文件上传成功'
-                result.data = {
+                result.data.push({
                     pictureUrl: `//localhost:${conf.port}/image/${fileType}/${fileName}`,
-                }
+                })
+
                 console.log('文件上传成功！')
 
             })
@@ -153,6 +152,8 @@ async function uploadFile( ctx, options) {
 
         // 解析结束事件
         busboy.on('finish',async function( ) {
+            result.success = true
+            result.message = '文件上传成功'
 
             console.log('文件上结束')
             resolve(result)

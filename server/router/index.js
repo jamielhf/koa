@@ -37,8 +37,6 @@ index.post('/testApi',indexController.testApi)
 index.post('/uploadImg', indexController.uploadImg)
 
 
-
-
 api.use('/api/user', user.routes(), user.allowedMethods())
 api.use('/api/logout', logout.routes(), logout.allowedMethods())
 api.use('/api/login', login.routes(), login.allowedMethods())
