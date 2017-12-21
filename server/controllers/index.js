@@ -10,8 +10,11 @@ const cheerio = require('cheerio');
 const URL = require('url');
 const fs = require('fs');
 const path = require('path');
-const {postData,uploadFile,imageMin} = require('../utils/util')
+const {postData,uploadFile,test,imageMinUtil} = require('../utils/util')
 
+const imagemin = require('imagemin'); //压缩图片
+const imageminJpegtran = require('imagemin-jpegtran');
+const imageminPngquant = require('imagemin-pngquant');
 
 
 
@@ -106,7 +109,22 @@ const indexControllers = {
             fileType: 'album',
             path: serverFilePath
         })
-        ctx.body = result
+        console.log(result)
+
+        async  function a() {
+            return new Promise((resolve,reject)=>{
+                setTimeout(()=>{
+                    resolve(1)
+                },1000)
+            })
+        }
+
+        let b =  await a()
+        console.log(b)
+        ctx.body =result
+        // let f = path.join(__dirname,'../static/image/album/d36697436be4f.png')
+        // let a = await imageMinUtil(f)
+        // console.log(a)
 
     }
 }

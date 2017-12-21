@@ -21,9 +21,6 @@ const imageminPngquant = require('imagemin-pngquant');
 
 
 
-
-
-
 //接口登录判断
 const isLogin = async (ctx, next) => {
     if(ctx.session&&ctx.session.isLogin&&ctx.session.userName){
@@ -79,9 +76,9 @@ function mkdirsSync( dirname ) {
  * @param filePath 文件路径
  * @returns {Promise}
  */
-async function imageMinUtil(filePath) {
+function imageMinUtil(filePath) {
 
-     return  imagemin([filePath], './static/out', {
+    return imagemin([filePath], './static/out', {
            plugins: [
                imageminJpegtran(),
                imageminPngquant({quality: '65-80'})
@@ -90,8 +87,26 @@ async function imageMinUtil(filePath) {
 
 }
 
+async function test() {
+    return new Promise((resolve,reject)=>{
 
-async function uploadFile2(ctx, options) {
+        resolve(1111)
+
+        console.log(2)
+
+    })
+}
+
+
+
+/**
+ * 上传文件
+ * @param  {object} ctx     koa上下文
+ * @param  {object} options 文件上传参数 fileType文件类型， path文件存放路径
+ * @return {promise}
+ */
+async function uploadFile( ctx, options) {
+
     let req = ctx.req
     let res = ctx.res
     let busboy = new Busboy({headers: req.headers})
@@ -99,7 +114,7 @@ async function uploadFile2(ctx, options) {
     // 获取类型
     let fileType = options.fileType || 'common'
     let filePath = path.join( options.path,  fileType)
-    console.log(filePath)
+
     let mkdirResult = mkdirsSync( filePath )
     let saveTo = ''
     return new Promise((resolve, reject) => {
@@ -125,11 +140,11 @@ async function uploadFile2(ctx, options) {
 
             // 文件写入事件结束
             file.on('end', function() {
+
                 result.success = true
                 result.message = '文件上传成功'
                 result.data = {
                     pictureUrl: `//localhost:${conf.port}/image/${fileType}/${fileName}`,
-                    saveTo
                 }
                 console.log('文件上传成功！')
 
@@ -137,15 +152,12 @@ async function uploadFile2(ctx, options) {
         })
 
         // 解析结束事件
-        busboy.on('finish', function( ) {
+        busboy.on('finish',async function( ) {
 
-            if(fs.existsSync( saveTo )){
-                console.log(11111)
-
-
-            }
             console.log('文件上结束')
             resolve(result)
+
+
         })
 
         // 解析错误事件
@@ -156,24 +168,10 @@ async function uploadFile2(ctx, options) {
 
         req.pipe(busboy)
     })
-}
-/**
- * 上传文件
- * @param  {object} ctx     koa上下文
- * @param  {object} options 文件上传参数 fileType文件类型， path文件存放路径
- * @return {promise}
- */
-async function uploadFile( ctx, options) {
-
-    let result =  await uploadFile2(ctx, options);
-    let file = result.data.saveTo.replace(/\\/g,'\\\\')
-    console.log(file)
-        let f = await imageMinUtil('D:\\work\\nodetest\\koa\\server\\static\\image\\album\\c899c774c2405.png');
-
-         return  f.path;
 
 
 }
+
 
 
 
@@ -181,5 +179,6 @@ module.exports = {
     isLogin,
     postData,
     uploadFile,
-
+    imageMinUtil,
+    test,
 }

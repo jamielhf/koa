@@ -5,10 +5,9 @@ const imagemin = require('imagemin');
 const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
 
-let f = path.join(__dirname,'/static/image/album/18d3999bc1ca1.png')
-
+let f = path.join(__dirname,'/static/image/album/e30848caa67a2.png')
 function a() {
-  return  imagemin([f], './static/out', {
+    return  imagemin([f], './static/out', {
         plugins: [
             imageminJpegtran(),
             imageminPngquant({quality: '65-80'})
@@ -21,4 +20,3 @@ function a() {
 a().then(function (f) {
     console.log(f)
 })
-
