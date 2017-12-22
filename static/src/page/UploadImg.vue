@@ -83,6 +83,8 @@ import axios from 'axios'
            e.preventDefault();    //阻止拖放后的浏览器默认行为
            const data = e.dataTransfer.files;  // 获取文件对象
            this.fileList = [];
+           this.p=0;
+
            if (data.length < 1) {
              return;  // 检测是否有文件拖拽到页面
            }
