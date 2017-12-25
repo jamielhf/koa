@@ -10,12 +10,7 @@ const cheerio = require('cheerio');
 const URL = require('url');
 const fs = require('fs');
 const path = require('path');
-const {postData,uploadFile,test,imageMinUtil} = require('../utils/util')
-
-const imagemin = require('imagemin'); //压缩图片
-const imageminJpegtran = require('imagemin-jpegtran');
-const imageminPngquant = require('imagemin-pngquant');
-
+const {postData,uploadFile,imageMinUtil} = require('../utils/util')
 
 
 const indexControllers = {
@@ -98,23 +93,44 @@ const indexControllers = {
             data:res
         }
     },
+
     async uploadImg(ctx){
         // 上传文件请求处理
         let result = { success: false }
         let serverFilePath = path.join( __dirname, '../static/image' )
 
-        // 上传文件事件
+            // 上传文件事件
 
-        result = await uploadFile( ctx, {
+        let img = await uploadFile( ctx, {
             fileType: 'album',
             path: serverFilePath
         })
-        console.log(result)
 
-        ctx.body =result
-        // let f = path.join(__dirname,'../static/image/album/d36697436be4f.png')
-        // let a = await imageMinUtil(f)
-        // console.log(a)
+
+        let arr = [],min;
+        img.map(function (i,k) {
+            arr.push(i.s)
+        })
+
+        min  =   await imageMinUtil(arr);
+        console.log(min)
+        img.map(function (i,k) {
+            delete i.s;
+            try {
+                i.minPath = min[k];
+            }
+            catch (e){
+                console.log(e)
+            }
+
+        })
+        if(img){
+            result.success = true
+            result.data = img
+        }
+
+        ctx.body = result
+
 
     }
 }

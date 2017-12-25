@@ -27,12 +27,12 @@
 
 
        </div>
-       <div class="field">
-         <div v-if="imgArr.length!=0" v-for="item in imgArr">
-           <img   :src="item.pictureUrl" alt="">
-           <p></p>
-         </div>
-       </div>
+       <!--<div class="field">-->
+         <!--<div v-if="imgArr.length!=0" v-for="item in imgArr">-->
+           <!--<img   :src="item.pictureUrl" alt="">-->
+           <!--<p></p>-->
+         <!--</div>-->
+       <!--</div>-->
 
      </div>
 
@@ -92,7 +92,7 @@ import axios from 'axios'
            const formData = new FormData();
            for (let i = 0; i < data.length; i++) {
              console.log(data[i]);
-             if (!/(jpg|png)/g.test(data[i].name) ){
+             if (!/(jpg|png|jpeg)/g.test(data[i].name) ){
                alert('只允许上传jpg或png文件');
                return;
              }

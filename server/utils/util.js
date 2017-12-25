@@ -73,30 +73,42 @@ function mkdirsSync( dirname ) {
 
 /**
  *
- * @param filePath 文件路径
+ * @param imgList 文件路径
  * @returns {Promise}
  */
-function imageMinUtil(filePath) {
+async function imageMinUtil(imgList) {
 
-    return imagemin([filePath], './static/out', {
-           plugins: [
-               imageminJpegtran(),
-               imageminPngquant({quality: '65-80'})
-           ]
-       })
-
-}
-
-async function test() {
     return new Promise((resolve,reject)=>{
+        imagemin(imgList, './static/out', {
+            plugins: [
+                imageminJpegtran(),
+                imageminPngquant({quality: '65-80'})
+            ]
+        }).then(function(f){
+            let arr = [];
 
-        resolve(1111)
+            f.map(function (i, k) {
+                console.log(i.path)
 
-        console.log(2)
+                let t = i.path.split('\\');
 
+                arr.push(`//localhost:${conf.port}/${t[0]}/${t[1]}/${t[2]}`);
+                // arr.push(`//localhost:${conf.port}/${i.path}}`);
+            });
+
+            resolve(arr)
+        })
     })
-}
 
+    // return await  imagemin(imgList, './static/out', {
+    //     plugins: [
+    //         imageminJpegtran(),
+    //         imageminPngquant({quality: '65-80'})
+    //     ]
+    // })
+
+
+}
 
 
 /**
@@ -119,12 +131,7 @@ async function uploadFile( ctx, options) {
     let saveTo = ''
     return new Promise((resolve, reject) => {
         console.log('文件上传中...')
-        let result = {
-            success: false,
-            message: '',
-            data: null
-        }
-        result.data = []
+        let imgList = [] ;
         // 解析请求文件事件
         busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
 
@@ -132,31 +139,28 @@ async function uploadFile( ctx, options) {
             let _uploadFilePath = path.join( filePath, fileName )
             saveTo = path.join(_uploadFilePath)
 
-            console.log(_uploadFilePath)
-
-
             // 文件保存到制定路径
             file.pipe(fs.createWriteStream(saveTo))
+
 
             // 文件写入事件结束
             file.on('end', function() {
 
-                result.data.push({
+                let s = path.join( filePath, fileName );
+                imgList.push({
                     pictureUrl: `//localhost:${conf.port}/image/${fileType}/${fileName}`,
-                })
-
-                console.log('文件上传成功！')
-
+                    s,
+                });
+                console.log('文件上成功')
             })
         })
 
         // 解析结束事件
         busboy.on('finish',async function( ) {
-            result.success = true
-            result.message = '文件上传成功'
+
 
             console.log('文件上结束')
-            resolve(result)
+            resolve(imgList)
 
 
         })
@@ -164,7 +168,8 @@ async function uploadFile( ctx, options) {
         // 解析错误事件
         busboy.on('error', function(err) {
             console.log('文件上出错')
-            reject(result)
+
+            reject(err)
         })
 
         req.pipe(busboy)
@@ -181,5 +186,4 @@ module.exports = {
     postData,
     uploadFile,
     imageMinUtil,
-    test,
 }
