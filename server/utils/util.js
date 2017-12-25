@@ -82,17 +82,24 @@ async function imageMinUtil(imgList) {
         imagemin(imgList, './static/out', {
             plugins: [
                 imageminJpegtran(),
-                imageminPngquant({quality: '65-80'})
+                imageminPngquant({quality: '40-60'})
             ]
         }).then(function(f){
             let arr = [];
 
             f.map(function (i, k) {
-                console.log(i.path)
 
                 let t = i.path.split('\\');
 
-                arr.push(`//localhost:${conf.port}/${t[0]}/${t[1]}/${t[2]}`);
+                let p = path.join(__dirname,'..',i.path)
+                console.log(p)
+
+                let minSize =  fs.readFileSync(p).length||0;
+
+                arr.push({
+                    minPath:`//localhost:${conf.port}/${t[0]}/${t[1]}/${t[2]}`,
+                    minSize
+                });
                 // arr.push(`//localhost:${conf.port}/${i.path}}`);
             });
 
@@ -135,6 +142,9 @@ async function uploadFile( ctx, options) {
         // 解析请求文件事件
         busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
 
+
+
+
             let fileName = Math.random().toString(16).substr(2) + '.' + mimetype.split('/')[1]
             let _uploadFilePath = path.join( filePath, fileName )
             saveTo = path.join(_uploadFilePath)
@@ -147,10 +157,17 @@ async function uploadFile( ctx, options) {
             file.on('end', function() {
 
                 let s = path.join( filePath, fileName );
+                let size =  fs.readFileSync(s).length;
+
                 imgList.push({
+                    name: fileName,
                     pictureUrl: `//localhost:${conf.port}/image/${fileType}/${fileName}`,
                     s,
+                    size
                 });
+
+
+
                 console.log('文件上成功')
             })
         })

@@ -21,10 +21,28 @@
 
        </div>
        <div class="field">
-         <p v-for="item in fileList">
-           {{item.name}}
-         </p>
-
+         <table class="is-bordered table">
+           <thead>
+           <tr>
+             <th>id</th>
+             <th>图片名</th>
+             <th>原大小</th>
+             <th>原图片地址</th>
+             <th>压缩后图片地址</th>
+             <th>压缩后</th>
+           </tr>
+           </thead>
+           <tbody>
+           <tr v-for="(item,key) in imgArr">
+             <th>{{key}}</th>
+             <th>{{item.name}}</th>
+             <th>{{item.size}}</th>
+             <th><a target="_blank" :href="item.pictureUrl">原图片地址</a></th>
+             <th><a  target="_blank"  :href="item.minPath">压缩后图片地址</a></th>
+             <th>{{item.minSize}}</th>
+           </tr>
+           </tbody>
+         </table>
 
        </div>
        <!--<div class="field">-->
@@ -39,6 +57,9 @@
    </div>
 </template>
 <style scoped>
+  p.c-list{
+
+  }
   .c-content{
     width: 500px;
     margin: 0 auto;
@@ -116,6 +137,7 @@ import axios from 'axios'
            }).then((res)=> {
              res = res.data;
              if(res.success){
+
                this.imgArr = res.data;
                console.log(this.imgArr)
              }

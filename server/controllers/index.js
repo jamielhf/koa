@@ -117,7 +117,8 @@ const indexControllers = {
         img.map(function (i,k) {
             delete i.s;
             try {
-                i.minPath = min[k];
+                i.minPath = min[k].minPath;
+                i.minSize = min[k].minSize;
             }
             catch (e){
                 console.log(e)
