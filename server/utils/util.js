@@ -142,9 +142,6 @@ async function uploadFile( ctx, options) {
         // 解析请求文件事件
         busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
 
-
-
-
             let fileName = Math.random().toString(16).substr(2) + '.' + mimetype.split('/')[1]
             let _uploadFilePath = path.join( filePath, fileName )
             saveTo = path.join(_uploadFilePath)

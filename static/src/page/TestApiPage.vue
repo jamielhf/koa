@@ -23,13 +23,28 @@
          </div>
        </div>
 
-       <div class="field">
+       <div class="control">
+         <label class="radio">
+           <input type="radio" v-model="hasImg" value="1" name="rsvp">
+           数据
+         </label>
+         <label class="radio">
+           <input type="radio" v-model="hasImg" value="2"  name="rsvp">
+           上传图片
+         </label>
+       </div>
+       <div class="field" v-if="hasImg==1">
          <label class="label">数据</label>
          <div class="control">
            <textarea class="textarea" v-model="data" placeholder="数据"></textarea>
          </div>
        </div>
+       <div class="field is-grouped" v-else>
+         <div class="control">
+           上传图片 <input @change="change"  type="file" />
+         </div>
 
+       </div>
        <div class="field is-grouped">
          <div class="control">
            <button class="button is-link" @click="submit">提交</button>
@@ -57,15 +72,18 @@
 <script>
 
 import api from '../api/api'
+import axios from 'axios'
 
    export default {
 
     data () {
      return {
        dataList:[],
-       url:'',
+       hasImg:2,
+       url:'http://localhost:3000/api/upload2',
        data:'',
-       type:'get',
+       type:'post',
+       formData:new FormData(),
        resBody:''
      }
     },
@@ -74,12 +92,39 @@ import api from '../api/api'
 
      },
      methods:{
-          submit(){
-              api.testApi(this.url,this.type,this.data).then((res)=>{
-                  console.log(res)
-                this.resBody = JSON.stringify(res.data, null, 4).replace(/\n/g, '<br>').replace(/\s/g, '&nbsp');
-              })
-          }
+       change(e){
+         let file = e.target.files[0];
+         this.formData.delete("file");
+         this.formData.append("file", file);
+         console.dir(this.formData)
+       },
+        submit(){
+
+           let header = '';
+           if(this.hasImg == 2){
+              console.dir(this.formData);
+             this.formData.delete("url");
+             this.formData.append("url", this.url);
+
+             axios({
+               method:"POST",
+               url:'/api/index/testUploadImg',
+               header:{
+                 "content-type": "multipart/form-data",
+               },
+               data:this.formData,
+             }).then((res)=>{
+                 console.log(res)
+             })
+           }else{
+               api.testApi(this.url,this.type,this.data,header).then((res)=>{
+                 console.log(res)
+                 this.resBody = JSON.stringify(res.data, null, 4).replace(/\n/g, '<br>').replace(/\s/g, '&nbsp');
+               })
+             }
+
+
+        }
      }
   }
 </script>

@@ -34,6 +34,7 @@ register.post('/',userInfoController.register)
 
 index.get('/article',indexController.article)
 index.post('/testApi',indexController.testApi)
+index.post('/testUploadImg',indexController.testUploadImg)
 index.post('/uploadImg', indexController.uploadImg)
 
 

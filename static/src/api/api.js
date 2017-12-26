@@ -20,6 +20,7 @@ const  conn = async (setting)=>{
 
   if(setting.type==='post'||setting.type==='POST'){
 
+    console.log(setting.others)
     return axios.post(baseUrl+setting.url,setting.data,setting.others)
 
   }else if(setting.type==='get'||setting.type==='GET'){
@@ -85,12 +86,14 @@ export default {
    * @param url
    * @param type
    * @param data
+   * @param header
    * @returns {Promise}
    */
-  async testApi(url,type,data){
+  async testApi(url,type,data,header = ''){
     return await conn({
       type:'post',
       url:'index/testApi',
+      others:header,
       data:{
         url,
         method:type,
