@@ -83,22 +83,30 @@ app.on('error', function (err, ctx) {
 
 //socket 应用
 io.on('connection', function(socket){
-    let defaultRoomId = '001';
-
+    let users = {},
+        usocket = {};
     console.log(socket.id)
 
-
+    console.log('--------一个用户连接上了--------');
     socket.on('sendMsg',  (data) =>{
-        if(data.type=='room'){
-            //是否有房间号
-            if(data.id){
-                socket.join(data.id);
 
-                io.sockets.in(data.id).emit('sendRoomMsg',data);
-            }
-        }
-
+        io.emit('sendRoomMsg',data);
     });
+
+    //初始连接
+    socket.on('userJoin', function(data) {
+        users[id] = data.id;
+        usocket[id] = socket;
+    })
+    socket.on('to'+1, function(data) {
+        users[id] = data.id;
+        usocket[id] = socket;
+    })
+
+    socket.on('disconnect', function() {
+        console.log('--------一个用户断开了连接--------');
+    });
+
 });
 server.listen(conf.port);
 

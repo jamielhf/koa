@@ -79,14 +79,21 @@ import axios from 'axios'
     data () {
      return {
        dataList:[],
-       hasImg:2,
-       url:'http://localhost:3000/api/upload2',
+       hasImg:1,
+       url:'',
        data:'',
-       type:'post',
+       type:'get',
        formData:new FormData(),
        resBody:''
      }
     },
+     watch:{
+       hasImg(){
+           if(this.hasImg==2){
+               this.type = 'post'
+           }
+       }
+     },
      mounted(){
 
 
@@ -114,7 +121,9 @@ import axios from 'axios'
                },
                data:this.formData,
              }).then((res)=>{
-                 console.log(res)
+
+               this.resBody = JSON.stringify(res.data, null, 4).replace(/\n/g, '<br>').replace(/\s/g, '&nbsp');
+
              })
            }else{
                api.testApi(this.url,this.type,this.data,header).then((res)=>{

@@ -86,49 +86,57 @@ const indexControllers = {
     },
     async testUploadImg(ctx){
 
-
-        let req =  ctx.req;
-
-        let form = new formidable.IncomingForm();
-        let f = '',url = '';
-
-        form.encoding = 'utf-8'; //设置编辑
-        // form.uploadDir = 'public' + AVATAR_UPLOAD_FOLDER;  //设置上传目录
-        form.keepExtensions = true; //保留后缀
-        form.maxFieldsSize = 20 * 1024 * 1024; //文件大小
-        form.parse(req, function(err, fields, files) {
-
-            url = fields.url
-
-
-        }).on("file", function(name, file) {
-            f = file.path;
-
-        }).on("end",async function() {
-
-
-            // f = path.join(__dirname,'../static/image/album/1ae59b4974695.png')
-
-            let formData = {
-                attachments: [
-                    fs.createReadStream(f)
-                ]
-            };
-
-            request.post({url:'http://localhost:3000/api/upload2', formData: formData}, function optionalCallback(err, httpResponse, body) {
-                if (err) {
-                    return console.error('upload failed:', err);
-                }
-                console.log('Upload successful!  Server responded with:', body);
-
-            });
-
-        })
-
-
-        ctx.body ={
-            a:1
+        let result= {
+            success:false
         }
+         let handleForm = async function (ctx) {
+
+            return new Promise((resolve,reject)=>{
+                let req =  ctx.req;
+
+                let form = new formidable.IncomingForm();
+                let f = '',url = '';
+
+                form.encoding = 'utf-8'; //设置编辑
+                // form.uploadDir = 'public' + AVATAR_UPLOAD_FOLDER;  //设置上传目录
+                form.keepExtensions = true; //保留后缀
+                form.maxFieldsSize = 20 * 1024 * 1024; //文件大小
+                form.parse(req, function(err, fields, files) {
+
+                    url = fields.url
+
+
+                }).on("file", function(name, file) {
+                    f = file.path;
+
+                }).on("end",async function() {
+
+                    let formData = {
+                        attachments: [
+                            fs.createReadStream(f)
+                        ]
+                    };
+
+                    request.post({url:url, formData: formData}, function optionalCallback(err, httpResponse, body) {
+                        if (err) {
+                              console.error('upload failed:', err);
+
+                            reject(err)
+                        }
+                        console.log('Upload successful!  Server responded with:', body);
+                        result.success = true
+                        resolve(body)
+
+                    });
+
+                })
+            })
+
+        }
+
+        result.data =  JSON.parse(await handleForm(ctx));
+
+        ctx.body = result
 
 
     },

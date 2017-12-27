@@ -37,7 +37,7 @@
 
    </div>
 </template>
-<style >
+<style scoped>
   .g-socket{
 
   }
@@ -114,6 +114,7 @@ const socket = io.connect('http://localhost:3009');
               msg:this.msg,
               user:this.user
           });
+          this.msg = ''
         },
        sel(type,id){
           this.type  = type;
