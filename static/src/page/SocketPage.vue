@@ -6,17 +6,15 @@
        <div class="columns is-desktop">
          <div class="column is-one-quarter c-list ">
            <ul>
-             <li  class="active" @click="sel('room','001')">
-               <p >默认群1</p>
+             <li v-for="(item,key) in talkList" :key="key" :class="active==key"  @click="sel(item.id)">
+               <p >{{item.name}}</p>
              </li>
-             <li  class="active" @click="sel('room','002')">
-               <p >默认群2</p>
-             </li>
+
            </ul>
          </div>
          <div class="column c-msg " >
            <ul v-for="item in allMsg">
-             <li>{{item.user}}:{{item.msg}}</li>
+             <li @click="talkTo(item.id,item.user)">{{item.id}} {{item.user}}:{{item.msg}}</li>
            </ul>
 
          </div>
@@ -40,6 +38,9 @@
 <style scoped>
   .g-socket{
 
+  }
+  .c-msg li {
+    cursor: pointer;
   }
   .c-list{
     padding: 0;
@@ -87,6 +88,14 @@ const socket = io.connect('http://localhost:3009');
        msg:'',
        allMsg:[],
        selMsg:[],
+       active:0,
+       talkList:[
+         {
+           name:'大厅',
+           id:''
+         }
+       ],
+       sId:'',
        type:'room',
        id:'001'
      }
@@ -98,24 +107,49 @@ const socket = io.connect('http://localhost:3009');
      },
      mounted(){
 
+
        socket.on('sendRoomMsg',  (data) =>{
 
-           console.log(data);
+
          this.allMsg.push(data)
 
        });
 
+       socket.on('getId',  (id) =>{
+
+         this.sId = id;
+       });
+       socket.on('message',  (data) =>{
+
+          console.log(data)
+
+       });
+
+
      },
      methods:{
         sendMsg(){
+          console.log(this.sId);
           socket.emit('sendMsg', {
-              type:this.type,
-              id:this.id,
+              id:this.sId,
               msg:this.msg,
               user:this.user
           });
           this.msg = ''
         },
+       /**
+        * 私聊
+        * @param id
+        * @param useName
+        */
+       talkTo(id,useName){
+
+         socket.emit('tallToSomeOne', {
+           id:id,
+           msg:'hello',
+           user:this.user
+         });
+       },
        sel(type,id){
           this.type  = type;
           this.id = id;

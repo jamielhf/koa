@@ -83,25 +83,42 @@ app.on('error', function (err, ctx) {
 
 //socket 应用
 io.on('connection', function(socket){
+
+    socket.join(socket.id);
+    console.log('--------一个用户连接上了--------');
     let users = {},
         usocket = {};
     console.log(socket.id)
+    //发送socketid到用户端
+    io.emit('getId',socket.id);
 
-    console.log('--------一个用户连接上了--------');
+
     socket.on('sendMsg',  (data) =>{
-
         io.emit('sendRoomMsg',data);
     });
 
-    //初始连接
-    socket.on('userJoin', function(data) {
-        users[id] = data.id;
-        usocket[id] = socket;
+
+    socket.on('tallToSomeOne', function(data) {
+        socket.join(data.id);
+        console.log('--------加入了房间'+data.id+'--------');
+        io.to(data.id).emit('message', data.msg);
+
+
+       // if( data.roomId){
+       //     console.log('--------加入了房间room'+data.roomId+'--------');
+       //     socket.join('room'+data.roomId);
+       // }
+
+        // socket.to('room').emit('roomMsg',{
+        //     msg:data.msg
+        // });
+
+        // usocket[id] = socket;
+
     })
-    socket.on('to'+1, function(data) {
-        users[id] = data.id;
-        usocket[id] = socket;
-    })
+
+
+
 
     socket.on('disconnect', function() {
         console.log('--------一个用户断开了连接--------');
