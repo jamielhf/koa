@@ -14,10 +14,6 @@ const  conn = async (setting)=>{
     timestamp:(new Date).getTime()
   }, setting.data)
 
-
-
-
-
   if(setting.type==='post'||setting.type==='POST'){
 
     console.log(setting.others)

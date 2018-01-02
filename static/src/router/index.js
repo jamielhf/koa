@@ -16,8 +16,8 @@ Vue.use(Router)
 const checkLogin  = (to,from,next)=>{
 
 
-  let isLogin = util.getCookie('isLogin');
-  console.log(isLogin)
+  let isLogin = util.getCookie('isLogin')?true:false;
+
    if(isLogin){
      next()
    }else{

@@ -11,11 +11,18 @@ const  { URL }  = require('url');
 const fs = require('fs');
 const path = require('path');
 const formidable = require('formidable');
-const {postData,uploadFile,imageMinUtil} = require('../utils/util')
+const {postData,uploadFile,imageMinUtil,isLogin,isLogin2} = require('../utils/util')
 const request = require('request');
+
+
 
 const indexControllers = {
     async getApiTest(ctx){
+
+
+
+
+
         const options={
             hostname:'webtest.yunyichina.cn',
             port:3000,
@@ -23,7 +30,7 @@ const indexControllers = {
             method:'GET'
         }
 
-          async function getData() {
+         async function getData() {
           return  new Promise((resolve,reject)=>{
                 let req = http.request(options, function(res){
                     let result = '';
@@ -140,18 +147,25 @@ const indexControllers = {
 
 
     },
+
+
+
+
     async testApi(ctx){
 
+
         let q = ctx.request.body;
-
-        console.log(q)
-
-        let res = await  postData(q.url,q.method,q.data);
-        console.log(res)
+        let res = {
+            success:false
+        }
+        if(q.url&&q.method&&q.data){
+             res = await  postData(q.url,q.method,q.data);
+        }
 
         ctx.body = {
             data:res
         }
+
 
 
     },

@@ -6,17 +6,19 @@
        <div class="columns is-desktop">
          <div class="column is-one-quarter c-list ">
            <ul>
-             <li v-for="(item,key) in talkList" :key="key" :class="active==key"  @click="sel(item.id)">
+             <li v-for="(item,key) in talkList" :key="key" :class="{active:active==key}"  @click="sel(key,item.id)">
                <p >{{item.name}}</p>
              </li>
 
            </ul>
          </div>
          <div class="column c-msg " >
-           <ul v-for="item in allMsg">
-             <li @click="talkTo(item.id,item.user)">{{item.id}} {{item.user}}:{{item.msg}}</li>
+           <!--<ul  v-for="(item,key) in talkList" :key="key"  v-if="active==key">-->
+             <!--<li v-for="i in allMsg[item]" @click="talkTo(i.id,i.user)">{{i.id}} {{i.user}}:{{i.msg}}</li>-->
+           <!--</ul>-->
+           <ul v-for="i in allMsg" >
+           <li @click="talkTo(i.id,i.user)">{{i.id}} {{i.user}}:{{i.msg}}</li>
            </ul>
-
          </div>
        </div>
        <div class="field is-grouped">
@@ -103,15 +105,14 @@ const socket = io.connect('http://localhost:3009');
      computed:{
        user (){
            return this.$store.getters.getUserInfo.username
-       }
+       },
+
      },
      mounted(){
 
-
        socket.on('sendRoomMsg',  (data) =>{
 
-
-         this.allMsg.push(data)
+         this.allMsg.push(data);
 
        });
 
@@ -124,8 +125,6 @@ const socket = io.connect('http://localhost:3009');
           console.log(data)
 
        });
-
-
      },
      methods:{
         sendMsg(){
@@ -143,14 +142,20 @@ const socket = io.connect('http://localhost:3009');
         * @param useName
         */
        talkTo(id,useName){
+        this.talkList.push({
+          id,
+          name:useName
+        });
 
+        this.active = this.talkList.length-1;
          socket.emit('tallToSomeOne', {
            id:id,
            msg:'hello',
            user:this.user
          });
        },
-       sel(type,id){
+       sel(key,type,id){
+          this.active = key;
           this.type  = type;
           this.id = id;
        }

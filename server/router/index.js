@@ -20,7 +20,6 @@ const user = new Router();
 const index = new Router()
 
 
-logout.use(isLogin)
 logout.get('/',userInfoController.userLogout)
 
 user.use(isLogin)
@@ -33,16 +32,16 @@ register.post('/',userInfoController.register)
 
 
 index.get('/article',indexController.article)
-index.post('/testApi',indexController.testApi)
-index.post('/testUploadImg',indexController.testUploadImg)
-index.post('/uploadImg', indexController.uploadImg)
+ .post('/testApi',isLogin,indexController.testApi)
+ .post('/testUploadImg',isLogin,indexController.testUploadImg)
+ .post('/uploadImg', isLogin,indexController.uploadImg)
 
 
 api.use('/api/user', user.routes(), user.allowedMethods())
-api.use('/api/logout', logout.routes(), logout.allowedMethods())
-api.use('/api/login', login.routes(), login.allowedMethods())
-api.use('/api/register', register.routes(), register.allowedMethods())
-api.use('/api/index', index.routes(), index.allowedMethods())
+ .use('/api/logout', logout.routes(), logout.allowedMethods())
+ .use('/api/login', login.routes(), login.allowedMethods())
+ .use('/api/register', register.routes(), register.allowedMethods())
+ .use('/api/index', index.routes(), index.allowedMethods())
 
 module.exports = api
 

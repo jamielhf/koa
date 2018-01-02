@@ -4,19 +4,7 @@
 const User = require('../models/user')
 
 const userInfoController =  {
-    /**
-     * id查找用户信息
-     * @param ctx 上下文
-     */
-    async getUserInfoById(ctx){
 
-           ctx.body ={
-               success:true,
-               data: ctx.session
-           }
-
-
-    },
     /**
      * 注册
      * @param ctx
@@ -34,6 +22,8 @@ const userInfoController =  {
        }else{
          delete  data.timestamp;
            data.create_time = new Date();
+           data.id =Math.random().toString(16).substr(2);
+
          let r =await  User.create(data);
 
            if ( r && r.insertId * 1 > 0) {
@@ -74,7 +64,8 @@ const userInfoController =  {
                         {
                             domain: 'localhost',  // 写cookie所在的域名
                             path: '/',       // 写cookie所在的路径
-                            maxAge: 10 * 60 * 1000, // cookie有效时长
+                            maxAge: 0, // cookie有效时长
+                            expire:'',
                             httpOnly: false,  // 是否只用于http请求中获取
                             overwrite: false  // 是否允许重写
                         }
@@ -85,7 +76,8 @@ const userInfoController =  {
                         {
                             domain: 'localhost',  // 写cookie所在的域名
                             path: '/',       // 写cookie所在的路径
-                            maxAge: 10 * 60 * 1000, // cookie有效时长
+                            maxAge:0 , // cookie有效时长
+                            expire:'',
                             httpOnly: false,  // 是否只用于http请求中获取
                             overwrite: false  // 是否允许重写
                         }
@@ -124,7 +116,7 @@ const userInfoController =  {
             {
                 domain: 'localhost',  // 写cookie所在的域名
                 path: '/',       // 写cookie所在的路径
-                maxAge: 10 * 60 * 1000, // cookie有效时长
+                maxAge: -1 , // cookie有效时长
                 httpOnly: false,  // 是否只用于http请求中获取
                 overwrite: false  // 是否允许重写
             }
@@ -135,7 +127,7 @@ const userInfoController =  {
             {
                 domain: 'localhost',  // 写cookie所在的域名
                 path: '/',       // 写cookie所在的路径
-                maxAge: 10 * 60 * 1000, // cookie有效时长
+                maxAge:-1, // cookie有效时长
                 httpOnly: false,  // 是否只用于http请求中获取
                 overwrite: false  // 是否允许重写
             }

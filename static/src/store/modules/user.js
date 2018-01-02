@@ -4,10 +4,16 @@
 import * as types from '../mutation'
 import util from '../../modules/util'
 
+
+let hasSession = false;
+
+
+console.log(util.getCookie('USER_SID'))
+
 const state = {
   userInfo:{
     username:util.getCookie('username'),
-    isLogin:util.getCookie('USER_SID')=='null'?false:util.getCookie('isLogin')?true:false
+    isLogin:util.getCookie('isLogin')
   },
 }
 

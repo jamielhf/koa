@@ -24,14 +24,22 @@ const imageminPngquant = require('imagemin-pngquant');
 //接口登录判断
 const isLogin = async (ctx, next) => {
     if(ctx.session&&ctx.session.isLogin&&ctx.session.userName){
+
         await next();
     }else{
+        console.log(123)
         ctx.body = {
             success:false,
             message:'没有登录信息'
         }
     }
 };
+
+const isLogin2 = async (ctx) => {
+
+};
+
+
 
 const postData =  async function (url,method,jsonObj) {
 
@@ -197,6 +205,7 @@ async function uploadFile( ctx, options) {
 
 module.exports = {
     isLogin,
+    isLogin2,
     postData,
     uploadFile,
     imageMinUtil,

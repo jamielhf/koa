@@ -7,6 +7,7 @@ const conf = require('./config');
 const router = require('./router/index');
 const path = require('path');
 const log4js = require('log4js');
+const socket = require('./controllers/chat');
 const {info} = require('./utils/log-util');
 const {isLogin}  = require('./utils/util')
 
@@ -82,49 +83,7 @@ app.on('error', function (err, ctx) {
 
 
 //socket 应用
-io.on('connection', function(socket){
-
-    socket.join(socket.id);
-    console.log('--------一个用户连接上了--------');
-    let users = {},
-        usocket = {};
-    console.log(socket.id)
-    //发送socketid到用户端
-    io.emit('getId',socket.id);
-
-
-    socket.on('sendMsg',  (data) =>{
-        io.emit('sendRoomMsg',data);
-    });
-
-
-    socket.on('tallToSomeOne', function(data) {
-        socket.join(data.id);
-        console.log('--------加入了房间'+data.id+'--------');
-        io.to(data.id).emit('message', data.msg);
-
-
-       // if( data.roomId){
-       //     console.log('--------加入了房间room'+data.roomId+'--------');
-       //     socket.join('room'+data.roomId);
-       // }
-
-        // socket.to('room').emit('roomMsg',{
-        //     msg:data.msg
-        // });
-
-        // usocket[id] = socket;
-
-    })
-
-
-
-
-    socket.on('disconnect', function() {
-        console.log('--------一个用户断开了连接--------');
-    });
-
-});
+io.on('connection', socket.bind(io));
 server.listen(conf.port);
 
 console.log(`the server is start at port ${conf.port}`)
