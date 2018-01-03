@@ -103,6 +103,7 @@ const socket = io.connect('http://localhost:3009');
      }
     },
      computed:{
+
        user (){
            return this.$store.getters.getUserInfo.username
        },
@@ -128,11 +129,10 @@ const socket = io.connect('http://localhost:3009');
      },
      methods:{
         sendMsg(){
-          console.log(this.sId);
           socket.emit('sendMsg', {
-              id:this.sId,
+              id:this.userId,
               msg:this.msg,
-              user:this.user
+              username:this.user
           });
           this.msg = ''
         },

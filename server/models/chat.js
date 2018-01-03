@@ -5,7 +5,14 @@
 const dbUtils = require('../utils/db-util');
 
 const Chat = {
-    async insertChat(){
+    /**
+     * 插入记录
+     * @param model
+     * @returns {Promise.<*>}
+     */
+    async insertChat(model){
+
+     return await dbUtils.insertData( 'chat', model )
 
 
     }

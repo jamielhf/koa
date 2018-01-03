@@ -166,8 +166,6 @@ const indexControllers = {
             data:res
         }
 
-
-
     },
 
     async uploadImg(ctx){

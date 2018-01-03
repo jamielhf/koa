@@ -20,6 +20,14 @@ const User = {
         return await dbUtils.query( _sql, [ 'user', obj.username, obj.email ] );
 
     },
+
+    async findUserByUsername(usename){
+
+        let _sql = "SELECT * FROM ?? WHERE usename = ? "
+
+        return await dbUtils.query( _sql, [ 'user',usename ] );
+    },
+
     /**
      * 是否存在某个值
      * @param key

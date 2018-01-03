@@ -5,6 +5,7 @@ const User = require('../models/user')
 
 const userInfoController =  {
 
+
     /**
      * 注册
      * @param ctx
@@ -17,23 +18,30 @@ const userInfoController =  {
             success:false,
             message:'fail',
         }
-       if(isExit.length>0){
-           res.message='已存在用户名或邮箱';
-       }else{
-         delete  data.timestamp;
-           data.create_time = new Date();
-           data.id =Math.random().toString(16).substr(2);
 
-         let r =await  User.create(data);
+        if(!data.username||!data.pwd){
+            res.message ='信息不全'
+        }else{
+            if(isExit.length>0){
+                res.message='已存在用户名或邮箱';
+            }else{
+                delete  data.timestamp;
+                data.create_time = new Date();
+                data.id =Math.random().toString(16).substr(2);
 
-           if ( r && r.insertId * 1 > 0) {
-               res.success = true;
-               res.message = '成功';
+                let r = await  User.create(data);
+                console.log(r)
+                if ( r && r.insertid ) {
+                    res.success = true;
+                    res.message = '成功';
 
-           } else {
-               res.message ='添加信息失败'
-           }
-       }
+                } else {
+                    res.message ='添加信息失败'
+                }
+            }
+        }
+
+
         ctx.body = res;
 
     },
@@ -70,6 +78,7 @@ const userInfoController =  {
                             overwrite: false  // 是否允许重写
                         }
                     )
+
                     ctx.cookies.set(
                         'isLogin',
                         true,
@@ -122,6 +131,17 @@ const userInfoController =  {
             }
         )
         ctx.cookies.set(
+            'userId',
+            '',
+            {
+                domain: 'localhost',  // 写cookie所在的域名
+                path: '/',       // 写cookie所在的路径
+                maxAge: -1 , // cookie有效时长
+                httpOnly: false,  // 是否只用于http请求中获取
+                overwrite: false  // 是否允许重写
+            }
+        )
+        ctx.cookies.set(
             'isLogin',
             false,
             {
@@ -147,12 +167,9 @@ const userInfoController =  {
      * @returns {Promise.<void>}
      */
     async getUserInfo(ctx){
-        if(ctx.session){
-            ctx.body = {
-                userName:ctx.session.userName
-            }
-        }
 
+        let r  = await User.findUserByUsername(ctx.session.userName);
+        console.log(r)
     }
 }
 

@@ -1,4 +1,9 @@
 
+const Chat = require('../models/chat')
+
+
+
+
 //socket 应用
 const socket = async function(socket){
 
@@ -11,8 +16,27 @@ const socket = async function(socket){
     this.emit('getId',socket.id);
 
 
-    socket.on('sendMsg',  (data) =>{
-        this.emit('sendRoomMsg',data);
+    socket.on('sendMsg', async (data) =>{
+
+        console.log(data)
+        let r =  await Chat.insertChat({
+            id:Math.random().toString(16).substr(2)+Math.random().toString(16).substr(2),
+            uid:data.id,
+            username:data.username,
+            msg:data.msg,
+            create_time:(new Date()).getTime(),
+        });
+
+        if ( r && r.insertid ) {
+            this.emit('sendRoomMsg',data);
+
+        } else {
+
+        }
+
+
+
+
     });
 
 
