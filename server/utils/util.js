@@ -43,7 +43,11 @@ const isLogin2 = async (ctx) => {
 
 const postData =  async function (url,method,jsonObj) {
 
+
+
+
     if(typeof(jsonObj)==='string'){
+        jsonObj = jsonObj.replace(/:/g,'=');
         jsonObj =  qs.parse(jsonObj)
     }
 

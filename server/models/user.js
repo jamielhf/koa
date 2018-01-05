@@ -21,11 +21,11 @@ const User = {
 
     },
 
-    async findUserByUsername(usename){
+    async findUserByUsername(username){
 
-        let _sql = "SELECT * FROM ?? WHERE usename = ? "
+        let _sql = "SELECT * FROM ?? WHERE username = ? "
 
-        return await dbUtils.query( _sql, [ 'user',usename ] );
+        return await dbUtils.query( _sql, [ 'user',username ] );
     },
 
     /**

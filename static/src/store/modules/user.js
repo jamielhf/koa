@@ -13,7 +13,8 @@ console.log(util.getCookie('USER_SID'))
 const state = {
   userInfo:{
     username:util.getCookie('username'),
-    isLogin:util.getCookie('isLogin')
+    isLogin:util.getCookie('isLogin'),
+    userId:localStorage.getItem('userId')||''
   },
 }
 
@@ -27,6 +28,7 @@ const actions = {
     commit(types.SET_USERINFO,data);
     util.setCookie('username',data.username);
     util.setCookie('isLogin',data.isLogin);
+    localStorage.setItem('userId',data.id);
   },
 
 }

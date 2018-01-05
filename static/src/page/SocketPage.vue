@@ -6,8 +6,8 @@
        <div class="columns is-desktop">
          <div class="column is-one-quarter c-list ">
            <ul>
-             <li v-for="(item,key) in talkList" :key="key" :class="{active:active==key}"  @click="sel(key,item.id)">
-               <p >{{item.name}}</p>
+             <li v-for="(item,key) in talkList" :key="key" :class="{active:active==key}"  @click="sel(key,item.roomId)">
+               <p >{{item.roomName}}</p>
              </li>
 
            </ul>
@@ -16,8 +16,11 @@
            <!--<ul  v-for="(item,key) in talkList" :key="key"  v-if="active==key">-->
              <!--<li v-for="i in allMsg[item]" @click="talkTo(i.id,i.user)">{{i.id}} {{i.user}}:{{i.msg}}</li>-->
            <!--</ul>-->
-           <ul v-for="i in allMsg" >
-           <li @click="talkTo(i.id,i.user)">{{i.id}} {{i.user}}:{{i.msg}}</li>
+           <ul v-for="(i,k) in allMsg[curRoomId]" >
+           <li @click="talkTo(i.id,i.user)">
+             <p>{{i.create_time}}</p>
+             <p>{{i.username}}:{{i.msg}}</p>
+           </li>
            </ul>
          </div>
        </div>
@@ -91,15 +94,11 @@ const socket = io.connect('http://localhost:3009');
        allMsg:[],
        selMsg:[],
        active:0,
-       talkList:[
-         {
-           name:'大厅',
-           id:''
-         }
-       ],
+       talkList:[ ],
        sId:'',
        type:'room',
-       id:'001'
+       curRoomId:'0001',
+       id:'0001'
      }
     },
      computed:{
@@ -107,15 +106,36 @@ const socket = io.connect('http://localhost:3009');
        user (){
            return this.$store.getters.getUserInfo.username
        },
+       userId (){
+         return this.$store.getters.getUserInfo.userId
+       },
 
      },
      mounted(){
 
+       socket.emit('userConnect', {
+         id:this.userId,
+         username:this.user
+       });
+
        socket.on('sendRoomMsg',  (data) =>{
 
-         this.allMsg.push(data);
+//         this.allMsg.push(data);
 
        });
+
+       socket.on('getRoomId',  (data) =>{
+           console.log('列表数据',data)
+         this.talkList = data
+
+       });
+
+       socket.on('getAllMsg',  (data) =>{
+         console.log('详细消息数据',data)
+         this.allMsg = data;
+
+       });
+
 
        socket.on('getId',  (id) =>{
 
@@ -129,6 +149,11 @@ const socket = io.connect('http://localhost:3009');
      },
      methods:{
         sendMsg(){
+            console.log({
+              id:this.userId,
+              msg:this.msg,
+              username:this.user
+            })
           socket.emit('sendMsg', {
               id:this.userId,
               msg:this.msg,

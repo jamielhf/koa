@@ -14,8 +14,13 @@ const Chat = {
 
      return await dbUtils.insertData( 'chat', model )
 
+    },
 
+    async findChatByRoomId(roomId){
+        let  _sql =  "SELECT * FROM ?? WHERE rId = ?  limit 50"
+        return dbUtils.query( _sql, [ 'chat', roomId ] );
     }
+
 }
 
 module.exports = Chat

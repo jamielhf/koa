@@ -98,7 +98,11 @@ export default {
     })
   },
 
-
+  /**
+   * 提交图片
+   * @param data
+   * @returns {Promise}
+   */
   async upload(data){
     return await conn({
       url: 'index/uploadImg',
@@ -107,6 +111,14 @@ export default {
       data,
     })
   },
+
+  async getUserInfo(){
+    return await conn({
+      url: 'user/info',
+      type: 'get'
+    })
+
+  }
 }
 
 

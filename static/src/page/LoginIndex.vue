@@ -72,12 +72,22 @@ export default {
           let d = res.data;
          if(d.success){
 
-           this.$store.dispatch('setUserInfo',{
-             username:d.data.userName,
-             isLogin:d.data.isLogin
-           })
+             api.getUserInfo().then( (res)=> {
+               let r  = res.data.data;
+                if(r.id){
+                    localStorage.setItem('userId',r.id);
+                  this.$store.dispatch('setUserInfo',{
+                    username:d.data.userName,
+                    isLogin:d.data.isLogin,
+                    id:r.id
+                  })
 
-           this.$router.push('/')
+                  this.$router.push('/')
+                }
+
+             })
+
+
          }else{
              alert(d.message)
          }

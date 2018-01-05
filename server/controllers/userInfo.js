@@ -30,8 +30,8 @@ const userInfoController =  {
                 data.id =Math.random().toString(16).substr(2);
 
                 let r = await  User.create(data);
-                console.log(r)
-                if ( r && r.insertid ) {
+
+                if ( r && typeof (r.insertId) ==='number') {
                     res.success = true;
                     res.message = '成功';
 
@@ -93,7 +93,6 @@ const userInfoController =  {
                     )
                     session.isLogin = true;
                     session.userName = emailResult[0].username;
-                    session.userId = emailResult[0].id;
                     res.success = true
                     res.data = session
                 }else{
@@ -167,9 +166,18 @@ const userInfoController =  {
      * @returns {Promise.<void>}
      */
     async getUserInfo(ctx){
-
         let r  = await User.findUserByUsername(ctx.session.userName);
-        console.log(r)
+
+        let res = {
+            success:false
+        }
+        if(r.length>0){
+            res.success = true;
+            delete  r[0].pwd
+            res.data = r[0];
+        }
+
+        ctx.body = res
     }
 }
 
