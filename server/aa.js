@@ -8,18 +8,6 @@ const client = new AipOcrClient(conf.BAIDU.appId, conf.BAIDU.apiKey, conf.BAIDU.
 
 const image = fs.readFileSync("uploads/img1.jpg").toString("base64");
 
-const url = 'http://www.gloryren.com/img/index/banner3.jpg';
-
-// 调用通用文字识别, 图片参数为本地图片
-client.generalBasic(image).then(function(result) {
-    console.log(JSON.stringify(result));
-}).catch(function(err) {
-    // 如果发生网络错误
-    console.log(err);
-});
-// client.generalBasicUrl(url).then(function(result) {
-//     console.log(JSON.stringify(result));
-// }).catch(function(err) {
-//     // 如果发生网络错误
-//     console.log(err);
-// });
+console.log(image.length)
+const image2 = fs.readFileSync("static/image/baiDuAiImg/0ef909ba82984.jpeg").toString("base64");
+console.log(image2.length)

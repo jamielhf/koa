@@ -27,6 +27,7 @@ const isLogin = async (ctx, next) => {
 
         await next();
     }else{
+        console.log(123)
         ctx.body = {
             success:false,
             message:'没有登录信息'
@@ -104,7 +105,7 @@ async function imageMinUtil(imgList) {
                 let t = i.path.split('\\');
 
                 let p = path.join(__dirname,'..',i.path)
-
+                console.log(p)
 
                 let minSize =  fs.readFileSync(p).length||0;
 
@@ -135,7 +136,6 @@ async function imageMinUtil(imgList) {
  * @param  {object} ctx     koa上下文
  * @param  {object} options 文件上传参数 fileType文件类型， path文件存放路径
  * @return {promise}
- * @return {array}  [{name:文件名，pictureUrl:图片访问路径,s:图片本地路径，size:图片大小}]
  */
 async function uploadFile( ctx, options) {
 
@@ -159,6 +159,7 @@ async function uploadFile( ctx, options) {
             let _uploadFilePath = path.join( filePath, fileName )
             saveTo = path.join(_uploadFilePath)
 
+
             // 文件保存到制定路径
             file.pipe(fs.createWriteStream(saveTo))
 
@@ -177,14 +178,12 @@ async function uploadFile( ctx, options) {
                 });
 
 
-
                 console.log('文件上成功')
             })
         })
 
         // 解析结束事件
         busboy.on('finish',async function( ) {
-
 
             console.log('文件上结束')
             resolve(imgList)

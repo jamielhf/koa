@@ -1,16 +1,18 @@
 <template>
   <div class="g-textApi">
+
     <p class="title is-5 has-text-centered">
-      提交图片
+      百度图片文字识别
     </p>
-    <div class="c-content">
+
+    <div class="c-content has-text-centered">
       <div
         @dragenter="ondragenter"
         @dragover="ondragover"
         @dragleave="ondragleave"
         @drop="ondrop"
         class="field img-box" ref="select_frame">
-
+    拖动图片到这里
       </div>
       <div class="field is-grouped is-grouped-centered">
         <p class="control">
@@ -20,6 +22,9 @@
         </p>
 
       </div>
+      <p class="has-text-centered">
+        图片要求： 大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式
+      </p>
       <div class="field">
         {{result}}
       </div>
@@ -35,10 +40,12 @@
   }
   .c-content{
     width: 500px;
-    margin: 0 auto;
+
+    margin: 30px auto;
   }
   .img-box{
     height: 300px;
+    line-height: 300px;
     width: 100%;
     border: 1px dashed #999;
   }
@@ -91,7 +98,7 @@
         for (let i = 0; i < data.length; i++) {
           console.log(data[i]);
           if (!/(jpg|png|jpeg)/g.test(data[i].name) ){
-            alert('只允许上传jpg或png文件');
+            alert('只允许上传jpg,jpeg或png文件');
             return;
           }
           this.fileList = this.fileList.concat(data[i])
@@ -113,10 +120,11 @@
           },
         }).then((res)=> {
           res = res.data;
-
+          this.p = 0;
           if(res.success){
-            this.p = 0;
             this.result = res.data.words_result;
+          }else{
+            this.result = res.data;
           }
         });
       },

@@ -166,7 +166,7 @@ const indexControllers = {
 
     },
     async testImg(ctx){
-        console.log(1)
+
         // 上传文件请求处理
         let result = { success: false }
         let serverFilePath = path.join( __dirname, '../static/image' )
@@ -178,15 +178,26 @@ const indexControllers = {
             path: serverFilePath
         })
 
-
-        const image = fs.readFileSync(img[0].s).toString("base64");
-//
-// // 调用通用文字识别, 图片参数为本地图片
         try {
-            result.data = await client.generalBasic(image);
-            result.success = true
-        }catch (e){
 
+        console.log(fs.existsSync(img[0].s))
+        const image = fs.readFileSync(img[0].s).toString("base64");
+        const image1 = fs.readFileSync(path.join( __dirname, '../uploads/img1.jpg' )).toString("base64");
+
+        console.log(image.length)
+        console.log(image1.length)
+
+
+        // 调用通用文字识别, 图片参数为本地图片
+        result.data = await client.generalBasic(image);
+        if(!result.data.error_code){
+            result.success = true
+        }
+
+
+
+        }catch (e){
+            result.msg = e
         }
 
 
