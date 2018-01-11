@@ -8,7 +8,6 @@ import util from '../../modules/util'
 let hasSession = false;
 
 
-console.log(util.getCookie('USER_SID'))
 
 const state = {
   userInfo:{

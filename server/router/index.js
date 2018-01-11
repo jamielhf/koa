@@ -36,6 +36,7 @@ index.get('/article',indexController.article)
  .post('/testApi',isLogin,indexController.testApi)
  .post('/testUploadImg',isLogin,indexController.testUploadImg)
  .post('/uploadImg', isLogin,indexController.uploadImg)
+ .post('/testImg', isLogin,indexController.testImg)
 
 
 api.use('/api/user', user.routes(), user.allowedMethods())

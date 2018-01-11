@@ -9,6 +9,13 @@ const config = {
         PORT: '3306',
         HOST: 'localhost'
     },
+
+    BAIDU:{
+        appId: 10667662,
+        apiKey: '3R4QYEBQiXepA8zTANZisLbA',
+        secretKey: 'aVuZ91E8YTfE6HvWpMK8qya8TzKfRXlQ'
+    },
+
     log:{
         appenders: {
             cheese: { type: 'file', filename: './logs/errorLogs.log' },

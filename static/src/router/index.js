@@ -31,7 +31,6 @@ export default new Router({
     {
       path: '/',
       name: 'Index',
-      redirect:'/socket',
       component: IndexPage
     },
     {

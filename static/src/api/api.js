@@ -111,7 +111,17 @@ export default {
       data,
     })
   },
+  /**
+   * 测试图片识别
+   * @returns {Promise}
+   */
+  async baiDuTextAi(){
+    return await conn({
+      url: 'index/testImg',
+      type: 'post'
+    })
 
+  },
   async getUserInfo(){
     return await conn({
       url: 'user/info',

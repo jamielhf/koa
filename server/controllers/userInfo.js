@@ -72,10 +72,10 @@ const userInfoController =  {
                         {
                             domain: 'localhost',  // 写cookie所在的域名
                             path: '/',       // 写cookie所在的路径
-                            maxAge: 0, // cookie有效时长
+                            maxAge: (new Date()).getTime()/1000-15*24*60*60*1000, // cookie有效时长
                             expire:'',
                             httpOnly: false,  // 是否只用于http请求中获取
-                            overwrite: false  // 是否允许重写
+                            overwrite: true  // 是否允许重写
                         }
                     )
 
@@ -85,10 +85,10 @@ const userInfoController =  {
                         {
                             domain: 'localhost',  // 写cookie所在的域名
                             path: '/',       // 写cookie所在的路径
-                            maxAge:0 , // cookie有效时长
+                            maxAge:'', // cookie有效时长
                             expire:'',
                             httpOnly: false,  // 是否只用于http请求中获取
-                            overwrite: false  // 是否允许重写
+                            overwrite: true  // 是否允许重写
                         }
                     )
                     session.isLogin = true;

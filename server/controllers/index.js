@@ -8,6 +8,7 @@ const queryString = require('querystring');
 const superagent = require('superagent');
 const cheerio = require('cheerio');
 const  { URL }  = require('url');
+const conf = require('../config')
 const fs = require('fs');
 const path = require('path');
 const formidable = require('formidable');
@@ -16,12 +17,19 @@ const request = require('request');
 
 
 
+const AipOcrClient = require("baidu-aip-sdk").ocr;
+
+
+
+// 新建一个对象，建议只保存一个对象调用服务接口
+const client = new AipOcrClient(conf.BAIDU.appId, conf.BAIDU.apiKey, conf.BAIDU.secretKey);
+
+
+
+
+
 const indexControllers = {
     async getApiTest(ctx){
-
-
-
-
 
         const options={
             hostname:'webtest.yunyichina.cn',
@@ -53,6 +61,11 @@ const indexControllers = {
 
 
     },
+    /**
+     * 获取掘金文章列表
+     * @param ctx
+     * @returns {Promise.<void>}
+     */
     async article(ctx){
 
         const getUrl  = async ()=>{
@@ -91,6 +104,11 @@ const indexControllers = {
         ctx.body =  res
 
     },
+    /**
+     * 上传 图片测试
+     * @param ctx
+     * @returns {Promise.<void>}
+     */
     async testUploadImg(ctx){
 
         let result= {
@@ -147,10 +165,42 @@ const indexControllers = {
 
 
     },
+    async testImg(ctx){
+        console.log(1)
+        // 上传文件请求处理
+        let result = { success: false }
+        let serverFilePath = path.join( __dirname, '../static/image' )
+
+        // 上传文件事件
+
+        let img = await uploadFile( ctx, {
+            fileType: 'baiDuAiImg',
+            path: serverFilePath
+        })
 
 
+        const image = fs.readFileSync(img[0].s).toString("base64");
+//
+// // 调用通用文字识别, 图片参数为本地图片
+        try {
+            result.data = await client.generalBasic(image);
+            result.success = true
+        }catch (e){
+
+        }
 
 
+        ctx.body = result
+
+
+    },
+
+
+    /**
+     * 接口测试
+     * @param ctx
+     * @returns {Promise.<void>}
+     */
     async testApi(ctx){
 
 
@@ -167,7 +217,11 @@ const indexControllers = {
         }
 
     },
-
+    /**
+     * 上传并压缩图片
+     * @param ctx
+     * @returns {Promise.<void>}
+     */
     async uploadImg(ctx){
         // 上传文件请求处理
         let result = { success: false }

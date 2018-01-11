@@ -27,7 +27,6 @@ const isLogin = async (ctx, next) => {
 
         await next();
     }else{
-        console.log(123)
         ctx.body = {
             success:false,
             message:'没有登录信息'
@@ -47,7 +46,7 @@ const postData =  async function (url,method,jsonObj) {
 
 
     if(typeof(jsonObj)==='string'){
-        jsonObj = jsonObj.replace(/:/g,'=');
+        jsonObj = jsonObj.replace(/\s/g,'').replace(/:/g,'=');
         jsonObj =  qs.parse(jsonObj)
     }
 
@@ -55,7 +54,8 @@ const postData =  async function (url,method,jsonObj) {
        request({
            url: url,
            method: method,
-           json: jsonObj
+           json: true,
+           qs:jsonObj
        }, function (error, response, body) {
            if (error) {
                reject(error);
@@ -104,7 +104,7 @@ async function imageMinUtil(imgList) {
                 let t = i.path.split('\\');
 
                 let p = path.join(__dirname,'..',i.path)
-                console.log(p)
+
 
                 let minSize =  fs.readFileSync(p).length||0;
 
@@ -135,6 +135,7 @@ async function imageMinUtil(imgList) {
  * @param  {object} ctx     koa上下文
  * @param  {object} options 文件上传参数 fileType文件类型， path文件存放路径
  * @return {promise}
+ * @return {array}  [{name:文件名，pictureUrl:图片访问路径,s:图片本地路径，size:图片大小}]
  */
 async function uploadFile( ctx, options) {
 
