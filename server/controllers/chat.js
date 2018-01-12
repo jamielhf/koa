@@ -16,18 +16,17 @@ const socket = async function(socket){
         //判断是否已经存在初始的对应关系，不存在就新增一天对应关系
 
         let isExit = await Room.isExitOne(data.id);
-
+        let roomId = 'r00001';
         let room = [];
         if(isExit.length>0){
 
             room =  await Room.findRoomById(data.id);
 
-
         }else{
             room = [
                 {
                     uid:data.id,
-                    roomId:'0001',
+                    roomId:roomId,
                     roomName:'大厅'
                 }
             ]
@@ -37,7 +36,11 @@ const socket = async function(socket){
         }
 
         if(room){
+
+
             let result = await Chat.findChatByRoomId(room[0].roomId);
+
+            console.log(result)
 
             this.emit('getRoomId',room);
 
@@ -52,10 +55,7 @@ const socket = async function(socket){
     })
 
 
-    let users = {},
-        usocket = {};
 
-    console.log(socket.id)
 
     //发送socketid到用户端
     this.emit('getId',socket.id);
@@ -63,10 +63,10 @@ const socket = async function(socket){
 
     socket.on('sendMsg', async (data) =>{
 
-        console.log(data)
+        console.log(data);
 
         let m  = {
-            id:Math.random().toString(16).substr(2)+Math.random().toString(16).substr(2),
+            id:Math.random().toString(16).substr(2)+Math.random().toString(16).substr(2),//消息的id
             uid:data.id,
             rid:data.roomId||'0001', //默认大厅的roomId是0001
             username:data.username,

@@ -17,7 +17,10 @@ const Chat = {
     },
 
     async findChatByRoomId(roomId){
-        let  _sql =  "SELECT * FROM ?? WHERE rId = ?  limit 50"
+
+        roomId = roomId.split(',');
+
+        let  _sql =  "SELECT * FROM ?? WHERE rId in (?)  limit 50"
         return dbUtils.query( _sql, [ 'chat', roomId ] );
     }
 

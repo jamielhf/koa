@@ -14,7 +14,7 @@
          </div>
          <div class="column c-msg "   ref="msgBox">
            <ul ref="msgUl">
-           <li  :key="k" v-for="(i,k) in allMsg[curRoomId]" @click="talkTo(i.id,i.user)">
+           <li  :key="k" v-for="(i,k) in allMsg[curRoomId]" @click="talkTo(i.uid,i.username)">
 
              <p v-if="userId!=i.uid"><i></i> <span>{{i.msg}}</span></p>
              <p v-else class="c-right "><span>{{i.msg}}</span> <i> </i> </p>
@@ -136,11 +136,11 @@ const socket = io.connect('http://localhost:3009');
        allMsg:[],
        selMsg:[],
        active:0,
-       talkList:[ ],
+       talkList:[],
        sId:'',
        type:'room',
-       curRoomId:'0001',
-       id:'0001'
+       curRoomId:'r00001',
+       id:'r00001'
      }
     },
 
@@ -164,12 +164,12 @@ const socket = io.connect('http://localhost:3009');
 
      mounted(){
 
-
+       //初始连接
        socket.emit('userConnect', {
          id:this.userId,
          username:this.user
        });
-//接收发送的消息
+      //接收发送的消息
        socket.on('sendRoomMsg',  (data) =>{
 
          console.log('接收到消息',data);
@@ -182,10 +182,8 @@ const socket = io.connect('http://localhost:3009');
            }
          })
 
-
-
        });
-
+      //获取对话列表
        socket.on('getRoomId',  (data) =>{
            console.log('列表数据',data)
          this.talkList = data
@@ -215,37 +213,45 @@ const socket = io.connect('http://localhost:3009');
        });
      },
      methods:{
+        //发送消息
         sendMsg(){
 
           socket.emit('sendMsg', {
               id:this.userId,
+              roomId:this.curRoomId,
               msg:this.msg,
               username:this.user
           });
           this.msg = ''
         },
        /**
-        * 私聊
+        * 新增对话
         * @param id
         * @param useName
         */
        talkTo(id,useName){
-        this.talkList.push({
-          id,
-          name:useName
-        });
-
-        this.active = this.talkList.length-1;
-         socket.emit('tallToSomeOne', {
-           id:id,
-           msg:'hello',
-           user:this.user
+        //如果已经存在列表
+         let isExit = this.talkList.find((v)=>{
+           return v.roomName === useName
          });
+
+         if(isExit){
+
+         }else{
+             let roomId ='copy-'+Math.random().toString(16).substr(2);//随机创建一个id，只是暂时的roomId
+           this.talkList.push({
+             roomId,
+             roomName:useName
+           });
+           this.active = this.talkList.length -1;
+           this.curRoomId = roomId;
+
+         }
+
        },
-       sel(key,type,id){
+       sel(key,id){
           this.active = key;
-          this.type  = type;
-          this.id = id;
+          this.curRoomId = id;
        }
      }
   }
