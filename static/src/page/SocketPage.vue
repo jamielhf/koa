@@ -12,14 +12,12 @@
 
            </ul>
          </div>
-         <div class="column c-msg " >
-           <!--<ul  v-for="(item,key) in talkList" :key="key"  v-if="active==key">-->
-             <!--<li v-for="i in allMsg[item]" @click="talkTo(i.id,i.user)">{{i.id}} {{i.user}}:{{i.msg}}</li>-->
-           <!--</ul>-->
-           <ul v-for="(i,k) in allMsg[curRoomId]" >
-           <li @click="talkTo(i.id,i.user)">
-             <p>{{i.create_time}}</p>
-             <p>{{i.username}}:{{i.msg}}</p>
+         <div class="column c-msg "   ref="msgBox">
+           <ul ref="msgUl">
+           <li  :key="k" v-for="(i,k) in allMsg[curRoomId]" @click="talkTo(i.id,i.user)">
+
+             <p v-if="userId!=i.uid"><i></i> <span>{{i.msg}}</span></p>
+             <p v-else class="c-right "><span>{{i.msg}}</span> <i> </i> </p>
            </li>
            </ul>
          </div>
@@ -54,6 +52,7 @@
   .c-list ul{
     position: relative;
 
+
   }
   .c-list li{
     position: relative;
@@ -73,7 +72,46 @@
     height: 500px;
     border-left: 1px solid #ccc;
     box-sizing: border-box;
+    background: #f5f5f5;
   }
+  p{
+    color: #333;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-start;
+    text-align: left;
+  }
+  p.c-right{
+    justify-content: flex-end;
+  }
+  p.c-right i{
+    margin-right: 0;
+    margin-left:20px;
+  }
+  p.c-right span{
+    background: hsl(171, 100%, 41%);
+  }
+
+  p i{
+    border-radius: 5px;
+    background: #fff;
+    width: 30px;
+    height: 30px;
+    background: url("../assets/logo.png") no-repeat;
+    background-size: cover;
+    display: inline-block;
+    margin-right: 20px;
+  }
+  p span{
+    display: block;
+    max-width: 350px;
+    word-break: break-all;
+    background: #fff;
+    padding: 0 8px;
+    line-height: 30px;
+    border-radius: 5px;
+  }
+
   .g-main{
     position: relative;
     width: 800px;
@@ -81,8 +119,12 @@
     margin: 0 auto;
   }
 </style>
+
+
+
 <script>
 import api from '../api/api'
+import util from '../modules/util'
 const socket = io.connect('http://localhost:3009');
    export default {
     components: {
@@ -101,26 +143,46 @@ const socket = io.connect('http://localhost:3009');
        id:'0001'
      }
     },
+
+     filters: {
+       timeChange: function (value) {
+         if (!value) return ''
+         return util.dateFormat(value,'yyyy-MM-dd hh:mm:ss')
+       }
+     },
      computed:{
 
        user (){
            return this.$store.getters.getUserInfo.username
        },
        userId (){
+
          return this.$store.getters.getUserInfo.userId
        },
 
      },
+
      mounted(){
+
 
        socket.emit('userConnect', {
          id:this.userId,
          username:this.user
        });
-
+//接收发送的消息
        socket.on('sendRoomMsg',  (data) =>{
 
-//         this.allMsg.push(data);
+         console.log('接收到消息',data);
+         this.allMsg[data.rid].push(data);
+         this.$nextTick(() =>{
+           if(this.$refs.msgBox){
+             let msgBox = this.$refs.msgBox,
+               msgUl = this.$refs.msgUl;
+             msgBox.scrollTop = msgUl.offsetHeight;
+           }
+         })
+
+
 
        });
 
@@ -129,13 +191,18 @@ const socket = io.connect('http://localhost:3009');
          this.talkList = data
 
        });
-
+      //初始的数据
        socket.on('getAllMsg',  (data) =>{
          console.log('详细消息数据',data)
          this.allMsg = data;
-
+         this.$nextTick(() =>{
+           if(this.$refs.msgBox){
+             let msgBox = this.$refs.msgBox,
+               msgUl = this.$refs.msgUl;
+             msgBox.scrollTop = msgUl.offsetHeight;
+           }
+         })
        });
-
 
        socket.on('getId',  (id) =>{
 
@@ -149,11 +216,7 @@ const socket = io.connect('http://localhost:3009');
      },
      methods:{
         sendMsg(){
-            console.log({
-              id:this.userId,
-              msg:this.msg,
-              username:this.user
-            })
+
           socket.emit('sendMsg', {
               id:this.userId,
               msg:this.msg,

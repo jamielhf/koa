@@ -20,14 +20,16 @@ const imageminJpegtran = require('imagemin-jpegtran');
 const imageminPngquant = require('imagemin-pngquant');
 
 
-
-//接口登录判断
-const isLogin = async (ctx, next) => {
+/**
+ * 接口登录判断
+ * @param ctx
+ * @param next
+ * @return {Promise.<void>}
+ */
+async function isLogin(ctx, next){
     if(ctx.session&&ctx.session.isLogin&&ctx.session.userName){
-
         await next();
     }else{
-        console.log(123)
         ctx.body = {
             success:false,
             message:'没有登录信息'
@@ -35,13 +37,39 @@ const isLogin = async (ctx, next) => {
     }
 };
 
-const isLogin2 = async (ctx) => {
+/**
+ * 时间格式转化
+ * @param time
+ * @param fmt
+ * @return {*}
+ */
+function dateFormat (time , fmt) {
+    // 对Date的扩展，将 Date 转化为指定格式的String
+    // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+    // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+    // 例子：
+    // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
+    // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
+    // Date.prototype.Format = function (fmt) {
+    let _date = new Date(time);
+    let o = {
+        "M+": _date.getMonth() + 1,
+        "d+": _date.getDate(),
+        "h+": _date.getHours(),
+        "m+": _date.getMinutes(),
+        "s+": _date.getSeconds(),
+        "q+": Math.floor((_date.getMonth() + 3) / 3),
+        "S": _date.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt))
+        fmt = fmt.replace(RegExp.$1, (_date.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (let k in o)
+        if (new RegExp("(" + k + ")").test(fmt))
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
 
-};
-
-
-
-const postData =  async function (url,method,jsonObj) {
+async function  postData(url,method,jsonObj) {
 
 
 
@@ -205,11 +233,9 @@ async function uploadFile( ctx, options) {
 }
 
 
-
-
 module.exports = {
     isLogin,
-    isLogin2,
+    dateFormat,
     postData,
     uploadFile,
     imageMinUtil,

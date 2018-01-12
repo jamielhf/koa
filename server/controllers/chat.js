@@ -2,7 +2,7 @@
 const Chat = require('../models/chat')
 const Room = require('../models/room')
 
-
+const {dateFormat} =  require('../utils/util')
 
 
 //socket 应用
@@ -72,13 +72,15 @@ const socket = async function(socket){
             username:data.username,
             msg:data.msg,
             create_time:new Date(),
-        }
+        };
 
         let r =  await Chat.insertChat(m);
 
         //保存数据后发送到客户端
+
         if ( r && typeof(r.insertId)=='number') {
-            this.emit('sendRoomMsg',data);
+
+            this.emit('sendRoomMsg',m);
 
         } else {
 
