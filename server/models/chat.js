@@ -16,12 +16,16 @@ const Chat = {
 
     },
 
-    async findChatByRoomId(roomId){
+    async findChatByRoomId(roomList){
 
-        roomId = roomId.split(',');
+        let r = [];
 
-        let  _sql =  "SELECT * FROM ?? WHERE rId in (?)  limit 50"
-        return dbUtils.query( _sql, [ 'chat', roomId ] );
+        roomList.map((i,k)=>{
+            r.push(i.roomId)
+        })
+
+        let  _sql =  "SELECT * FROM ?? WHERE rId in (?) ORDER BY create_time limit 50 "
+        return dbUtils.query( _sql, [ 'chat', ...r] );
     }
 
 }

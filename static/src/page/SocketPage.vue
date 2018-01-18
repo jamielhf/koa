@@ -6,7 +6,7 @@
        <div class="columns is-desktop">
          <div class="column is-one-quarter c-list ">
            <ul>
-             <li v-for="(item,key) in talkList" :key="key" :class="{active:active==key}"  @click="sel(key,item.roomId)">
+             <li v-for="(item,key) in talkList" :key="key" :class="{active:active==key}"  @click="sel(key,item.roomId,'personal')">
                <p >{{item.roomName}}</p>
              </li>
 
@@ -138,9 +138,11 @@ const socket = io.connect('http://localhost:3009');
        active:0,
        talkList:[],
        sId:'',
-       type:'room',
+       type:'group',
        curRoomId:'r00001',
-       id:'r00001'
+       id:'r00001',
+       toUsername:'',
+       toUserId:'',
      }
     },
 
@@ -215,13 +217,20 @@ const socket = io.connect('http://localhost:3009');
      methods:{
         //发送消息
         sendMsg(){
-
-          socket.emit('sendMsg', {
-              id:this.userId,
-              roomId:this.curRoomId,
-              msg:this.msg,
-              username:this.user
-          });
+          let m = {
+            id:this.userId,
+            roomId:this.curRoomId,
+            msg:this.msg,
+            type:this.type,
+            username:this.user
+          };
+          if(this.type =='personal'){  //发送个人对话
+            m = Object.assign(m,{
+              toUsername:this.toUsername,
+              toUserId:this.toUserId
+            })
+          }
+          socket.emit('sendMsg',m);
           this.msg = ''
         },
        /**
@@ -245,11 +254,14 @@ const socket = io.connect('http://localhost:3009');
            });
            this.active = this.talkList.length -1;
            this.curRoomId = roomId;
+           this.toUsername = useName;
+           this.toUserId = id;
 
          }
 
        },
-       sel(key,id){
+       sel(key,id,type = 'group'){
+          this.type = type;
           this.active = key;
           this.curRoomId = id;
        }

@@ -25,13 +25,7 @@ const Room = {
         return await dbUtils.insertData( 'room', model )
 
     },
-    /**
-     * 是否已经存在对应关系
-     * @returns {Promise.<void>}
-     */
-    async isExitOne(uid){
-        return await dbUtils.isExitOne('room','uid',uid)
-    }
+
 }
 
 module.exports = Room
