@@ -126,7 +126,7 @@ import axios from 'axios'
 
              })
            }else{
-               api.testApi(this.url,this.type,this.data,header).then((res)=>{
+               api.index.testApi(this.url,this.type,this.data,header).then((res)=>{
                  console.log(res)
                  this.resBody = JSON.stringify(res.data, null, 4).replace(/\n/g, '<br>').replace(/\s/g, '&nbsp');
                })

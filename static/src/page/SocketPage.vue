@@ -6,7 +6,7 @@
        <div class="columns is-desktop">
          <div class="column is-one-quarter c-list ">
            <ul>
-             <li v-for="(item,key) in talkList" :key="key" :class="{active:active==key}"  @click="sel(key,item.roomId,'personal')">
+             <li v-for="(item,key) in talkList" :key="key" :class="{active:active==key}"  @click="sel(key,item.roomId,item.type)">
                <p >{{item.roomName}}</p>
              </li>
 
@@ -14,9 +14,14 @@
          </div>
          <div class="column c-msg "   ref="msgBox">
            <ul ref="msgUl">
-           <li  :key="k" v-for="(i,k) in allMsg[curRoomId]" @click="talkTo(i.uid,i.username)">
+           <li  :key="k" v-for="(i,k) in allMsg[curRoomId]" @click="talkTo(i.uid,i.username,'personal')">
 
-             <p v-if="userId!=i.uid"><i></i> <span>{{i.msg}}</span></p>
+             <p v-if="userId!=i.uid">
+
+               <img :src="i.head_url" v-if="i.head_url" />
+               <i v-else></i>
+
+               <span>{{i.msg}}</span></p>
              <p v-else class="c-right "><span>{{i.msg}}</span> <i> </i> </p>
            </li>
            </ul>
@@ -133,7 +138,7 @@ const socket = io.connect('http://localhost:3009');
     data () {
      return {
        msg:'',
-       allMsg:[],
+       allMsg:{},
        selMsg:[],
        active:0,
        talkList:[],
@@ -171,11 +176,27 @@ const socket = io.connect('http://localhost:3009');
          id:this.userId,
          username:this.user
        });
+
+       socket.on(this.userId,data=>{
+         if(data){
+
+           this.talkList = data.roomList;
+           this.allMsg = data.msg;
+         }
+       })
+
       //接收发送的消息
        socket.on('sendRoomMsg',  (data) =>{
 
          console.log('接收到消息',data);
+         if(!this.allMsg[data.rid]){
+//           this.allMsg[data.rid] = [];
+           this.$set(this.allMsg, data.rid, [])
+         }
          this.allMsg[data.rid].push(data);
+
+         console.log(this.allMsg)
+
          this.$nextTick(() =>{
            if(this.$refs.msgBox){
              let msgBox = this.$refs.msgBox,
@@ -185,12 +206,7 @@ const socket = io.connect('http://localhost:3009');
          })
 
        });
-      //获取对话列表
-       socket.on('getRoomId',  (data) =>{
-           console.log('列表数据',data)
-         this.talkList = data
 
-       });
       //初始的数据
        socket.on('getAllMsg',  (data) =>{
          console.log('详细消息数据',data)
@@ -205,16 +221,26 @@ const socket = io.connect('http://localhost:3009');
        });
 
        socket.on('getId',  (id) =>{
-
          this.sId = id;
        });
-       socket.on('message',  (data) =>{
+       //获取对话列表
+       socket.on('getRoomId',  (data) =>{
+         console.log('列表数据',data)
+         this.talkList = data
 
+       });
+       socket.on('personalMsg',  (data) =>{
           console.log(data)
-
        });
      },
      methods:{
+       //获取房间列表
+       getRoomList(){
+         socket.emit('getRoomList',{
+           id:this.userId,
+           username:this.user
+         });
+       },
         //发送消息
         sendMsg(){
           let m = {
@@ -224,12 +250,16 @@ const socket = io.connect('http://localhost:3009');
             type:this.type,
             username:this.user
           };
+          console.log(this.type)
           if(this.type =='personal'){  //发送个人对话
             m = Object.assign(m,{
               toUsername:this.toUsername,
               toUserId:this.toUserId
             })
           }
+
+          console.log(m)
+
           socket.emit('sendMsg',m);
           this.msg = ''
         },
@@ -237,8 +267,10 @@ const socket = io.connect('http://localhost:3009');
         * 新增对话
         * @param id
         * @param useName
+        * @param type
         */
-       talkTo(id,useName){
+       talkTo(id,useName,type){
+         this.type = type;
         //如果已经存在列表
          let isExit = this.talkList.find((v)=>{
            return v.roomName === useName
@@ -250,6 +282,7 @@ const socket = io.connect('http://localhost:3009');
              let roomId ='copy-'+Math.random().toString(16).substr(2);//随机创建一个id，只是暂时的roomId
            this.talkList.push({
              roomId,
+             type,
              roomName:useName
            });
            this.active = this.talkList.length -1;

@@ -25,9 +25,6 @@ const AipOcrClient = require("baidu-aip-sdk").ocr;
 const client = new AipOcrClient(conf.BAIDU.appId, conf.BAIDU.apiKey, conf.BAIDU.secretKey);
 
 
-
-
-
 const indexControllers = {
     async getApiTest(ctx){
 
@@ -83,12 +80,12 @@ const indexControllers = {
 
             })
 
-        }
+        };
 
         let res = {
             success:true,
             data:{}
-        }
+        };
         let $ = cheerio.load((await getUrl()).text);
         res.data.article = [];
         $("ul.entry-list .title").map((k,i)=>{
@@ -98,7 +95,7 @@ const indexControllers = {
                 title:dom.text()||"",
                 artUrl:('https://juejin.im'+dom.attr('href'))||""
             })
-        })
+        });
 
 
         ctx.body =  res
@@ -113,7 +110,7 @@ const indexControllers = {
 
         let result= {
             success:false
-        }
+        };
          let handleForm = async function (ctx) {
 
             return new Promise((resolve,reject)=>{
@@ -165,6 +162,11 @@ const indexControllers = {
 
 
     },
+  /**
+   * 百度图片识别接口测试
+   * @param ctx
+   * @return {Promise.<void>}
+   */
     async testImg(ctx){
 
         // 上传文件请求处理
@@ -182,10 +184,6 @@ const indexControllers = {
 
         console.log(fs.existsSync(img[0].s))
         const image = fs.readFileSync(img[0].s).toString("base64");
-        const image1 = fs.readFileSync(path.join( __dirname, '../uploads/img1.jpg' )).toString("base64");
-
-        console.log(image.length)
-        console.log(image1.length)
 
 
         // 调用通用文字识别, 图片参数为本地图片

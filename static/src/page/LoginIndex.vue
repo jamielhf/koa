@@ -68,12 +68,12 @@ export default {
     login(){
 
       let  hash = md5(this.pwd);
-      api.login(this.email,hash).then((res)=>{
-          let d = res.data;
+      api.user.login(this.email,hash).then((res)=>{
+          let d = res;
          if(d.success){
 
-             api.getUserInfo().then( (res)=> {
-               let r  = res.data.data;
+             api.user.getUserInfo().then( (res)=> {
+               let r  = res.data;
                 if(r.id){
                     localStorage.setItem('userId',r.id);
                   this.$store.dispatch('setUserInfo',{

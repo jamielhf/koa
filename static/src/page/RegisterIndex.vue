@@ -76,7 +76,7 @@ export default {
 
         let  hash = md5(this.pwd);
 
-        api.register(this.username,this.email,hash).then((res)=>{
+        api.user.register(this.username,this.email,hash).then((res)=>{
             if(res.data.success){
               alert(res.data.message);
                 this.$router.push('/login')

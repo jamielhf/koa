@@ -138,7 +138,7 @@ async function imageMinUtil(imgList) {
                 let minSize =  fs.readFileSync(p).length||0;
 
                 arr.push({
-                    minPath:`//localhost:${conf.port}/${t[0]}/${t[1]}/${t[2]}`,
+                    minPath:`//localhost:${conf.port}/${t[1]}/${t[2]}`,
                     minSize
                 });
                 // arr.push(`//localhost:${conf.port}/${i.path}}`);

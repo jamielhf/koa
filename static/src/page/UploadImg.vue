@@ -10,7 +10,7 @@
           @dragleave="ondragleave"
           @drop="ondrop"
           class="field img-box" ref="select_frame">
-
+          <p>把图片放在这里</p>
         </div>
        <div class="field is-grouped is-grouped-centered">
          <p class="control">
@@ -36,10 +36,10 @@
            <tr v-for="(item,key) in imgArr">
              <th>{{key}}</th>
              <th>{{item.name}}</th>
-             <th>{{item.size}}</th>
-             <th><a target="_blank" :href="item.pictureUrl">原图片地址</a></th>
-             <th><a  target="_blank"  :href="item.minPath">压缩后图片地址</a></th>
-             <th>{{item.minSize}}</th>
+             <th>{{item.size/1000}}K</th>
+             <th><a target="_blank" :href="item.pictureUrl">地址</a></th>
+             <th><a  target="_blank"  :href="item.minPath">地址</a></th>
+             <th>{{item.minSize/1000}}K</th>
            </tr>
            </tbody>
          </table>
@@ -61,12 +61,18 @@
 
   }
   .c-content{
-    width: 500px;
+    width: 800px;
     margin: 0 auto;
+  }
+  .img-box p{
+    text-align: center;
   }
   .img-box{
     height: 300px;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: 1px dashed #999;
   }
 </style>

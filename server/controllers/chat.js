@@ -9,12 +9,14 @@ const {dateFormat} =  require('../utils/util')
 //socket 应用
 const socket = async function(socket){
 
-    socket.join(socket.id);
+
     //初始化链接
     socket.on('userConnect', async (data) =>{
         console.log('--------一个用户连接上了--------');
+
         console.log(data)
         //判断是否已经存在初始的对应关系，不存在就新增一天对应关系
+        socket.join(data.id);
 
         let roomList = await User_room.roomList(data.id); //该用户的对话房间
 
@@ -25,29 +27,40 @@ const socket = async function(socket){
             {
               uid:data.id,
               roomId:roomId,
-              roomName:'大厅'
+              roomName:'大厅',
+              type:'group'
             }
           ]
           let insertResult =  await User_room.insertRoom(roomList[0])
-          console.log(insertResult)
+
         }
 
         if(roomList){
           let result = await Chat.findChatByRoomId(roomList);
 
+          roomList.map((i,k)=>{
+            if(i.roomId!='r00001'){
+              socket.join(i.roomId);
+            }
+          });
+
           this.emit('getRoomId',roomList);
 
           let r = {};
-          r[roomList[0].roomId] = result
+          roomList.map((i,k)=>{
+            result.map((item,key)=>{
+              if(item.rId == i.roomId){
+                if(r[i.roomId] == undefined){
+                  r[i.roomId] = [];
+                }
+                  r[i.roomId].push(item)
+
+              }
+            })
+          });
 
           this.emit('getAllMsg',r);
         }
-
-
-
-
-
-
 
 
     })
@@ -59,7 +72,6 @@ const socket = async function(socket){
 
     socket.on('sendMsg', async (data) =>{
 
-        console.log(data);
           let m  = {
             id:Math.random().toString(16).substr(2)+Math.random().toString(16).substr(2),//消息的id
             uid:data.id,
@@ -68,26 +80,97 @@ const socket = async function(socket){
             msg:data.msg,
             create_time:new Date(),
           };
+
+          console.log(data)
+
         if(data.type=='personal'){
 
             if(data.roomId.indexOf('copy')>=0){ //暂时的roomid
+                let roomId = 'r'+Math.random().toString(16).substr(2);
+              m.rid = roomId;
+              let r =  {
+                uid:data.id,
+                roomId,
+                type:'personal',
+                roomName:data.toUsername,
+              };
+              let r2 =  {
+                uid:data.toUserId,
+                roomId,
+                type:'personal',
+                roomName:data.username,
+              };
+            //新增自己的房间
+              let insertResult1 =  await User_room.insertRoom(r);
+              if(typeof(insertResult1.insertId)=='number'){
+                let roomList = await User_room.roomList(data.id); //该用户的对话房间
+                if(roomList.length>0){
+                  this.emit('getRoomId',roomList);
+
+                  let insertChatR =  await Chat.insertChat(m);
+
+                  if ( insertChatR && typeof(insertChatR.insertId)=='number') {
+                    m.toUsername = data.toUsername;
+                    m.toUserId = data.toUserId;
+                    this.to(roomId).emit('personalMsg', m);
+                  }
+
+                }
+              }
+              //新增聊天的人的房间
+              let insertResult2 =  await User_room.insertRoom(r2);
+              if(typeof(insertResult2.insertId)=='number'){
+
+
+                let roomList = await User_room.roomList(data.id); //该用户的对话房间
+
+                let result = await Chat.findChatByRoomId(roomList);
+                let r = {};
+                roomList.map((i,k)=>{
+                  result.map((item,key)=>{
+                    if(item.rId == i.roomId){
+                      if(r[i.roomId] == undefined){
+                        r[i.roomId] = [];
+                      }
+                      r[i.roomId].push(item)
+
+                    }
+                  })
+                });
+
+                this.emit(data.toUserId,{
+                  roomList,
+                  msg:r
+                });
+                // let roomList = await User_room.roomList(data.toUserId); //该用户的对话房间
+                // this.to(data.id).emit('reGetRoomList', m);
+              }
+
+
+
+            }else{
 
             }
 
-        }
+        }else{
 
 
-        let r =  await Chat.insertChat(m);
 
-        //保存数据后发送到客户端
+          let r =  await Chat.insertChat(m);
 
-        if ( r && typeof(r.insertId)=='number') {
+          //保存数据后发送到客户端
+
+          if ( r && typeof(r.insertId)=='number') {
 
             this.emit('sendRoomMsg',m);
 
-        } else {
+          } else {
 
+          }
         }
+
+
+
 
 
     });

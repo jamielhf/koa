@@ -81,6 +81,7 @@ export default {
 
     }
   },
+
   computed:{
      isLogin(){
          return this.$store.getters.getUserInfo.isLogin||false
@@ -92,16 +93,16 @@ export default {
   },
   methods:{
     logout(){
-        api.logout().then((res)=>{
-            if(res.data.success){
+        api.user.logout().then((res)=>{
+            if(res.success){
               this.$store.dispatch('setUserInfo',{
                 username:'',
                 isLogin:''
-              })
+              });
               alert('已退出')
               this.$router.push('/')
             }else{
-                alert(res.data.message)
+                alert(res.message)
             }
 
 

@@ -44,7 +44,7 @@ import api from '../api/api'
      },
      mounted(){
 
-       api.articleList().then((res)=>{
+       api.index.articleList().then((res)=>{
          console.log(res)
          if(res.data.success){
            this.dataList = res.data.data.article

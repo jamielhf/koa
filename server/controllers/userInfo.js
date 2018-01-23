@@ -157,6 +157,17 @@ const userInfoController =  {
             message:'退出成功'
         }
     },
+
+    async isLogin(ctx){
+       let r = {"success":false,"message":"没有登录信息"};
+
+      if(ctx.session && ctx.session.userName){
+        r = {"success":true,"message":"已登录"}
+       }
+      console.log(r)
+       ctx.body = r;
+    },
+
     async test(ctx,next){
         ctx.body = 1221
     },

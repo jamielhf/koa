@@ -23,7 +23,7 @@ const index = new Router()
 logout.get('/',userInfoController.userLogout)
 
 user.use(isLogin)
-user.get('/',userInfoController.test)
+user.get('/',userInfoController.isLogin)
 user.get('/info',userInfoController.getUserInfo)
 
 login.post('/',userInfoController.userLogin)

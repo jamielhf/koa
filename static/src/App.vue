@@ -21,12 +21,21 @@
   import HeaderCom from './components/Header';
   import FooterCom from './components/Footer';
 //import './css/base.scss';
-
+import api from './api/api'
+import util from './modules/util'
 export default {
   name: 'app',
   components:{
     HeaderCom,
     FooterCom
+  },
+  created(){
+    api.user.isLogin().then( (res) =>{
+        if(!res.success){
+          util.setCookie('isLogin','')
+          util.setCookie('username','')
+        }
+    })
   }
 }
 </script>

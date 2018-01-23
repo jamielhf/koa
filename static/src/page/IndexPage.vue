@@ -125,6 +125,7 @@
             this.result = res.data.words_result;
           }else{
             this.result = res.data;
+            alert(res.message)
           }
         });
       },
