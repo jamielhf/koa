@@ -100,6 +100,36 @@ const socket = async function(socket){
                 type:'personal',
                 roomName:data.username,
               };
+
+              //新增聊天的人的房间
+              let insertResult2 =  await User_room.insertRoom(r2);
+              if(typeof(insertResult2.insertId)=='number'){
+
+                let roomList = await User_room.roomList(data.toUserId); //该用户的对话房间
+
+                let result = await Chat.findChatByRoomId(roomList);
+                let r = {};
+                roomList.map((i,k)=>{
+                  socket.join(i.roomId);
+                  result.map((item,key)=>{
+                    if(item.rId == i.roomId){
+                      if(r[i.roomId] == undefined){
+                        r[i.roomId] = [];
+                      }
+                      r[i.roomId].push(item)
+                    }
+                  })
+                });
+
+                this.emit(data.toUserId,{
+                  roomList,
+                  msg:r
+                });
+
+                // let roomList = await User_room.roomList(data.toUserId); //该用户的对话房间
+                // this.to(data.id).emit('reGetRoomList', m);
+              }
+
             //新增自己的房间
               let insertResult1 =  await User_room.insertRoom(r);
               if(typeof(insertResult1.insertId)=='number'){
@@ -112,49 +142,32 @@ const socket = async function(socket){
                   if ( insertChatR && typeof(insertChatR.insertId)=='number') {
                     m.toUsername = data.toUsername;
                     m.toUserId = data.toUserId;
+                    socket.join(roomId);
                     this.to(roomId).emit('personalMsg', m);
                   }
 
                 }
               }
-              //新增聊天的人的房间
-              let insertResult2 =  await User_room.insertRoom(r2);
-              if(typeof(insertResult2.insertId)=='number'){
 
-
-                let roomList = await User_room.roomList(data.id); //该用户的对话房间
-
-                let result = await Chat.findChatByRoomId(roomList);
-                let r = {};
-                roomList.map((i,k)=>{
-                  result.map((item,key)=>{
-                    if(item.rId == i.roomId){
-                      if(r[i.roomId] == undefined){
-                        r[i.roomId] = [];
-                      }
-                      r[i.roomId].push(item)
-
-                    }
-                  })
-                });
-
-                this.emit(data.toUserId,{
-                  roomList,
-                  msg:r
-                });
-                // let roomList = await User_room.roomList(data.toUserId); //该用户的对话房间
-                // this.to(data.id).emit('reGetRoomList', m);
-              }
 
 
 
             }else{
 
+              let insertChatR =  await Chat.insertChat(m);
+              m.toUsername = data.toUsername;
+              m.toUserId = data.toUserId;
+              console.log(111,m)
+              if ( insertChatR && typeof(insertChatR.insertId)=='number') {
+                this.to(m.rid).emit('personalMsg', m);
+              }
+
+
             }
 
         }else{
 
-
+          console.log(data.roomId)
 
           let r =  await Chat.insertChat(m);
 
@@ -174,6 +187,10 @@ const socket = async function(socket){
 
 
     });
+
+
+
+
 
 
     socket.on('tallToSomeOne', (data) =>{

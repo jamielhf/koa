@@ -230,7 +230,9 @@ const socket = io.connect('http://localhost:3009');
 
        });
        socket.on('personalMsg',  (data) =>{
-          console.log(data)
+
+         console.log(data)
+         this.allMsg[data.rid].push(data);
        });
      },
      methods:{
@@ -250,7 +252,7 @@ const socket = io.connect('http://localhost:3009');
             type:this.type,
             username:this.user
           };
-          console.log(this.type)
+
           if(this.type =='personal'){  //发送个人对话
             m = Object.assign(m,{
               toUsername:this.toUsername,
@@ -259,7 +261,6 @@ const socket = io.connect('http://localhost:3009');
           }
 
           console.log(m)
-
           socket.emit('sendMsg',m);
           this.msg = ''
         },
