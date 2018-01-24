@@ -10,6 +10,7 @@ const SuperagentPage = (resolve)=>{require(['../page/SuperagentPage.vue'],resolv
 const Register = (resolve)=>{require(['../page/RegisterIndex.vue'],resolve)}
 const TestApiPage = (resolve)=>{require(['../page/TestApiPage.vue'],resolve)}
 const UploadImg = (resolve)=>{require(['../page/UploadImg.vue'],resolve)}
+const UserInfo = (resolve)=>{require(['../page/UserInfo.vue'],resolve)}
 Vue.use(Router)
 
 
@@ -38,6 +39,12 @@ export default new Router({
       component: TestApiPage,
       beforeEnter:checkLogin
     },
+    {
+      path: '/userInfo',
+      component: UserInfo,
+      beforeEnter:checkLogin
+    },
+
     {
       path: '/uploadImg',
       component: UploadImg,

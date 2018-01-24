@@ -17,6 +17,8 @@ const state = {
   },
 }
 
+console.log(state.userInfo)
+
 const getters = {
   getUserInfo:state => state.userInfo,
 }

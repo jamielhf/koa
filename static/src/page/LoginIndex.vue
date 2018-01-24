@@ -82,7 +82,7 @@ export default {
                     id:r.id
                   })
 
-                  this.$router.push('/')
+                 location.href = '/'
                 }
 
              })

@@ -20,16 +20,28 @@
 
                <img :src="i.head_url" v-if="i.head_url" />
                <i v-else></i>
+               <span>
+                 <em class="c-name">{{i.username}}</em>
+                 <span class="c-chat">{{i.msg}}</span>
+              </span>
 
-               <span>{{i.msg}}</span></p>
-             <p v-else class="c-right "><span>{{i.msg}}</span> <i> </i> </p>
+             </p>
+             <p v-else class="c-right ">
+               <span>
+                 <em class="c-name">{{i.username}}</em>
+                 <span class="c-chat">{{i.msg}}</span>
+              </span>
+
+               <img :src="i.head_url" v-if="i.head_url" />
+               <i v-else></i>
+             </p>
            </li>
            </ul>
          </div>
        </div>
        <div class="field is-grouped">
          <div class="control is-expanded">
-           <input class="input" type="text"  placeholder="发送消息" v-model="msg">
+           <input @keydown="keydown" class="input" type="text"  placeholder="发送消息" v-model="msg">
          </div>
          <div class="control">
            <a class="button is-info" @click="sendMsg">
@@ -47,8 +59,12 @@
   .g-socket{
 
   }
+  .c-name{
+
+  }
   .c-msg li {
     cursor: pointer;
+    position: relative;
   }
   .c-list{
     padding: 0;
@@ -81,6 +97,7 @@
   }
   p{
     color: #333;
+
     margin-bottom: 20px;
     display: flex;
     justify-content: flex-start;
@@ -89,26 +106,43 @@
   p.c-right{
     justify-content: flex-end;
   }
+  p.c-right em{
+    text-align: right;
+  }
+  p.c-right>span{
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    text-align: left;
+  }
   p.c-right i{
     margin-right: 0;
-    margin-left:20px;
+    margin-left:15px;
   }
-  p.c-right span{
+  p.c-right .c-chat{
     background: hsl(171, 100%, 41%);
   }
 
+  p em{
+    display: inline-block;
+    top:-10px;
+    font-style: normal;
+    position: relative;
+  }
   p i{
     border-radius: 5px;
     background: #fff;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     background: url("../assets/logo.png") no-repeat;
     background-size: cover;
     display: inline-block;
-    margin-right: 20px;
+    margin-right: 15px;
   }
-  p span{
+  p .c-chat{
     display: block;
+    top:-10px;
+    position: relative;
     max-width: 350px;
     word-break: break-all;
     background: #fff;
@@ -176,12 +210,16 @@ const socket = io.connect('http://localhost:3009');
          id:this.userId,
          username:this.user
        });
-
+      //单独的获取信息
        socket.on(this.userId,data=>{
          if(data){
-
+            console.log('建立聊天的时候获取的消息',data)
            this.talkList = data.roomList;
            this.allMsg = data.msg;
+
+           this.curRoomId  = this.talkList[this.active].roomId
+           console.log(this.talkList[this.active].roomId)
+
          }
        })
 
@@ -229,13 +267,23 @@ const socket = io.connect('http://localhost:3009');
          this.talkList = data
 
        });
+      //个人对话通讯
        socket.on('personalMsg',  (data) =>{
 
          console.log(data)
+         if(!this.allMsg[data.rid]){
+           this.allMsg[data.rid] = []
+         }
          this.allMsg[data.rid].push(data);
        });
      },
      methods:{
+       keydown(e){
+          //回车
+          if(e.keyCode==13){
+            this.sendMsg()
+          }
+       },
        //获取房间列表
        getRoomList(){
          socket.emit('getRoomList',{
@@ -271,28 +319,38 @@ const socket = io.connect('http://localhost:3009');
         * @param type
         */
        talkTo(id,useName,type){
+
+         if(id==this.userId){
+           return false
+         }
+
+
          this.type = type;
+         let roomId = '',isExit = false;
         //如果已经存在列表
-         let isExit = this.talkList.find((v)=>{
-           return v.roomName === useName
-         });
+         this.talkList.map((i,k)=>{
+           if(i.roomName == useName) {
+             roomId = i.roomId
+             isExit =  true
+           }else{
+             isExit = false
+           }
+         })
 
          if(isExit){
 
          }else{
-             let roomId ='copy-'+Math.random().toString(16).substr(2);//随机创建一个id，只是暂时的roomId
+           roomId ='copy-'+Math.random().toString(16).substr(2);//随机创建一个id，只是暂时的roomId
            this.talkList.push({
              roomId,
              type,
              roomName:useName
            });
-           this.active = this.talkList.length -1;
-           this.curRoomId = roomId;
-           this.toUsername = useName;
-           this.toUserId = id;
-
          }
-
+         this.active = this.talkList.length -1;
+         this.curRoomId = roomId;
+         this.toUsername = useName;
+         this.toUserId = id;
        },
        sel(key,id,type = 'group'){
           this.type = type;
