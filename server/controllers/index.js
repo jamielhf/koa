@@ -58,49 +58,125 @@ const indexControllers = {
 
 
     },
-    /**
-     * 获取掘金文章列表
-     * @param ctx
-     * @returns {Promise.<void>}
-     */
+  /**
+   * 获取账号信息
+   * @return {Promise.<void>}
+   */
+  async getInfo(){
+      return new Promise((resolve,reject)=>{
+        superagent.post('https://pet-chain.baidu.com/data/user/get')
+          .send({"petId":petId,"requestId":(new Date()).getTime(),"appId":1,"tpl":""})
+          .set('Accept','application/json')
+          .set('Cookie', '__cfduid=dbf8759957a4f5112ef785d7a53935dc61491011387; BAIDUID=9E66BBE6D343AE662D16DAA87DAA9386:FG=1; BIDUPSID=431D87B31DC4883AEF8F59B29BBE2BAF; PSTM=1498794747; MCITY=-%3A; PSINO=7; H_PS_PSSID=1446_21122_18559_17001_22158; FP_UID=ed470ee7366693b09d84195099113d9f; BDUSS=UNNRjItWlRWY0t5aGZPaGozTnhlU3VSS2NZMXV-UDZPYjJyU0J6Zm9hWHNRSjlhQVFBQUFBJCQAAAAAAAAAAAEAAAA2bF04amFtaWUyMDEzxdbX0wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOyzd1rss3daa; BDORZ=B490B5EBF6F3CD402E515D22BCDA1598')
+          .end(function(err, res) {
+            if (err) {
+              //do something
+            } else {
+              resolve(res.body)
+            }
+          })
+      })
+
+    },
+    async createBuy(petId){
+        return new Promise((resolve,reject)=>{
+
+
+          superagent.post('https://pet-chain.baidu.com/data/market/shouldJump2JianDan')
+            .send({"requestId":(new Date()).getTime(),"appId":1,"tpl":""})
+            .end(async (err, res) =>{
+              if (err) {
+                console.log('发起购买失败')
+              } else {
+                superagent.post('https://pet-chain.baidu.com/data/txn/create')
+                  .send({"petId":petId,"requestId":(new Date()).getTime(),"appId":1,"tpl":""})
+                  .set('Cookie','__cfduid=dbf8759957a4f5112ef785d7a53935dc61491011387; BAIDUID=9E66BBE6D343AE662D16DAA87DAA9386:FG=1; BIDUPSID=431D87B31DC4883AEF8F59B29BBE2BAF; PSTM=1498794747; MCITY=-%3A; FP_UID=ed470ee7366693b09d84195099113d9f; BDUSS=R2NFdvZHh6QnNFZTk5a2JHTFVuNWpjbm5hYTlRSm02WVEzbnlhVX5QUjBVNTlhQVFBQUFBJCQAAAAAAAAAAAEAAAA2bF04amFtaWUyMDEzxdbX0wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHTGd1p0xndaen; PSINO=7; H_PS_PSSID=1446_21122_18559_17001_22158; BDORZ=B490B5EBF6F3CD402E515D22BCDA1598')
+                  .end(function(err, res) {
+                    if (err) {
+                      console.log('购买失败')
+                      reject(err)
+                    } else {
+                      console.log('购买响应')
+                      resolve(res.body)
+                    }
+                  })
+              }
+            })
+
+
+        })
+    },
+
     async article(ctx){
 
         const getUrl  = async ()=>{
-            return new Promise((resovle,reject)=>{
-                superagent.get('https://juejin.im/welcome/frontend')
-                    .query({}) // query string
-                    .end((err, res) => {
-                        if(!err){
-                            resovle(res)
-                        }else{
-                            reject(err)
-                        }
+            return new Promise((resolve,reject)=>{
 
-                    });
+              superagent.post('https://pet-chain.baidu.com/data/market/queryPetsOnSale')
+                .send({"pageNo":1,"pageSize":100,"querySortType":"AMOUNT_ASC","petIds":[],"lastAmount":null,"lastRareDegree":null,"requestId":1517796244446,"appId":0,"tpl":""})
+                .set('Accept','application/json')
+                .set('Cookie', '__cfduid=dbf8759957a4f5112ef785d7a53935dc61491011387; BAIDUID=9E66BBE6D343AE662D16DAA87DAA9386:FG=1; BIDUPSID=431D87B31DC4883AEF8F59B29BBE2BAF; PSTM=1498794747; MCITY=-%3A; PSINO=7; H_PS_PSSID=1446_21122_18559_17001_22158; FP_UID=ed470ee7366693b09d84195099113d9f; BDUSS=UNNRjItWlRWY0t5aGZPaGozTnhlU3VSS2NZMXV-UDZPYjJyU0J6Zm9hWHNRSjlhQVFBQUFBJCQAAAAAAAAAAAEAAAA2bF04amFtaWUyMDEzxdbX0wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOyzd1rss3daa; BDORZ=B490B5EBF6F3CD402E515D22BCDA1598')
+                .end(function(err, res) {
+                  if (err) {
+                    //do something
+                  } else {
+                   resolve(res.body)
+                  }
+                })
 
             })
 
         };
+
+
+
+
+        let d = await getUrl()
+
+        if(d){
+
+          d.data.petsOnSale.map((i,k)=>{
+            if(i.amount<=1000&&i.amount>499){
+
+              let t = '',time = 0;
+              let c = setInterval( async ()=>{
+                try {
+                  t = await indexControllers.createBuy(i.petId);
+                  if(t){
+                    console.log('-----------------------------------')
+                    console.log(t)
+                    console.log('-----------------------------------')
+                    clearInterval(c)
+                  }
+                }catch (e){
+                  if(e&&time<3){
+                    time++;
+                    console.log('出错我要重新发起请求')
+                  }else{
+                    clearInterval(c)
+                  }
+                }
+              },2000)
+
+
+
+            }
+
+          })
+        }
 
         let res = {
             success:true,
-            data:{}
+            data:d
         };
-        let $ = cheerio.load((await getUrl()).text);
-        res.data.article = [];
-        $("ul.entry-list .title").map((k,i)=>{
-           let dom = $(i);
-
-            res.data.article.push({
-                title:dom.text()||"",
-                artUrl:('https://juejin.im'+dom.attr('href'))||""
-            })
-        });
-
 
         ctx.body =  res
 
     },
+
+
+
+
     /**
      * 上传 图片测试
      * @param ctx
@@ -162,11 +238,11 @@ const indexControllers = {
 
 
     },
-  /**
-   * 百度图片识别接口测试
-   * @param ctx
-   * @return {Promise.<void>}
-   */
+    /**
+     * 百度图片识别接口测试
+     * @param ctx
+     * @return {Promise.<void>}
+     */
     async testImg(ctx){
 
         // 上传文件请求处理

@@ -14,6 +14,7 @@
          </div>
          <div class="column c-msg "   ref="msgBox">
            <ul ref="msgUl">
+
            <li  :key="k" v-for="(i,k) in allMsg[curRoomId]" @click="talkTo(i.uid,i.username,'personal')">
 
              <p v-if="userId!=i.uid">
@@ -202,7 +203,12 @@ const socket = io.connect('http://localhost:3009');
        },
 
      },
-
+    created(){
+      //请求是否允许通知
+      Notification.requestPermission().then(res=>{
+        console.log(res)
+      })
+    },
      mounted(){
 
        //初始连接
@@ -216,10 +222,7 @@ const socket = io.connect('http://localhost:3009');
             console.log('建立聊天的时候获取的消息',data)
            this.talkList = data.roomList;
            this.allMsg = data.msg;
-
            this.curRoomId  = this.talkList[this.active].roomId
-           console.log(this.talkList[this.active].roomId)
-
          }
        })
 
@@ -307,8 +310,13 @@ const socket = io.connect('http://localhost:3009');
               toUserId:this.toUserId
             })
           }
+          new Notification("新的消息", {
+            body:this.msg,
+            tag:(new Date()).getTime(),
+            renotify:true,
 
-          console.log(m)
+          })
+
           socket.emit('sendMsg',m);
           this.msg = ''
         },

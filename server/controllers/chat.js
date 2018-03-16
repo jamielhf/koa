@@ -101,11 +101,11 @@ const socket = async function(socket){
                 roomName:data.username,
               };
 
-
+              let insertChatR =  await Chat.insertChat(m);
 
               //新增聊天的人的房间
               let insertResult2 =  await User_room.insertRoom(r2);
-              if(typeof(insertResult2.insertId)=='number'){
+              if(typeof(insertResult2.insertId)=='number'&&insertChatR){
 
                 let roomList = await User_room.roomList(data.toUserId); //该用户的对话房间
 
@@ -140,7 +140,7 @@ const socket = async function(socket){
 
                   // this.to(data.id).emit('getRoomId',roomList);
 
-                  let insertChatR =  await Chat.insertChat(m);
+
 
                   let result = await Chat.findChatByRoomId(roomList);
                   let r = {};
