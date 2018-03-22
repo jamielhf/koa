@@ -108,69 +108,53 @@ const indexControllers = {
     },
 
     async article(ctx){
+      let getUrl = ()=>{
+        return new Promise((resolve,reject)=> {
+          superagent.get('https://juejin.im/timeline/frontend').end(function (err, res) {
+            if (err) {
+              reject(err)
+              console.log(err)
+            } else {
 
-        const getUrl  = async ()=>{
-            return new Promise((resolve,reject)=>{
-
-              superagent.post('https://pet-chain.baidu.com/data/market/queryPetsOnSale')
-                .send({"pageNo":1,"pageSize":100,"querySortType":"AMOUNT_ASC","petIds":[],"lastAmount":null,"lastRareDegree":null,"requestId":1517796244446,"appId":0,"tpl":""})
-                .set('Accept','application/json')
-                .set('Cookie', '__cfduid=dbf8759957a4f5112ef785d7a53935dc61491011387; BAIDUID=9E66BBE6D343AE662D16DAA87DAA9386:FG=1; BIDUPSID=431D87B31DC4883AEF8F59B29BBE2BAF; PSTM=1498794747; MCITY=-%3A; PSINO=7; H_PS_PSSID=1446_21122_18559_17001_22158; FP_UID=ed470ee7366693b09d84195099113d9f; BDUSS=UNNRjItWlRWY0t5aGZPaGozTnhlU3VSS2NZMXV-UDZPYjJyU0J6Zm9hWHNRSjlhQVFBQUFBJCQAAAAAAAAAAAEAAAA2bF04amFtaWUyMDEzxdbX0wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOyzd1rss3daa; BDORZ=B490B5EBF6F3CD402E515D22BCDA1598')
-                .end(function(err, res) {
-                  if (err) {
-                    //do something
-                  } else {
-                   resolve(res.body)
-                  }
-                })
-
-            })
-
-        };
-
-
-
-
-        let d = await getUrl()
-
-        if(d){
-
-          d.data.petsOnSale.map((i,k)=>{
-            if(i.amount<=1000&&i.amount>499){
-
-              let t = '',time = 0;
-              let c = setInterval( async ()=>{
-                try {
-                  t = await indexControllers.createBuy(i.petId);
-                  if(t){
-                    console.log('-----------------------------------')
-                    console.log(t)
-                    console.log('-----------------------------------')
-                    clearInterval(c)
-                  }
-                }catch (e){
-                  if(e&&time<3){
-                    time++;
-                    console.log('出错我要重新发起请求')
-                  }else{
-                    clearInterval(c)
-                  }
-                }
-              },2000)
-
-
-
+              resolve(res.text)
             }
-
           })
-        }
+        })
+      }
 
-        let res = {
-            success:true,
-            data:d
-        };
+      let r = await  getUrl()
+    //cheerio 类似jq的操作，把拿到的html用jq的方式拿到数据
+      let $ = cheerio.load(r, {decodeEntities: false});
 
-        ctx.body =  res
+      let content=[];
+
+       if(r){
+         $('.entry-box .title').each(function (idx, element) {
+
+           let $element = $(element);
+           content.push({
+             title: $element.text()
+           })
+         })
+
+
+         ctx.body =  {
+           success:true,
+           data:content,
+           code:0
+         }
+
+       }else{
+         ctx.body =  {
+           success:false
+         }
+       }
+
+
+
+
+
+
 
     },
 

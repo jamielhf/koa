@@ -12,17 +12,12 @@ const {info} = require('./utils/log-util');
 const {isLogin}  = require('./utils/util')
 
 
-
-
 log4js.configure(conf.log);
 
 const app = new Koa;
 
 const server = require('http').createServer(app.callback());
 const io = require('socket.io')(server);
-
-
-
 
 const logger = log4js.getLogger('cheese');
 
